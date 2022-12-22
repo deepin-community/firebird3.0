@@ -1,0 +1,15 @@
+Description: add Documentation key to the systemd service
+ Adapted from upstream commit 70bbc0e7a54c796d60164e85664c4d26f547dfb4
+Author: Damyan Ivanov <dmn@debian.org>
+Forwarded: yes
+
+--- a/builds/install/arch-specific/linux/firebird-superserver.service.in
++++ b/builds/install/arch-specific/linux/firebird-superserver.service.in
+@@ -2,6 +2,7 @@
+ Description=Firebird Database Server ( SuperServer )
+ After=syslog.target network.target
+ Conflicts=firebird-classic.socket
++Documentation=https://firebirdsql.org/en/firebird-rdbms/
+ 
+ [Service]
+ User=firebird

@@ -1,0 +1,15 @@
+Description: drop StandardError=syslog setting
+ Taken from upstream commit cdf8410db5b8bd264f6621867d0f319053b489a0
+Author: Damyan Ivanov <dmn@debian.org>
+Forwarded: yes
+
+--- a/builds/install/arch-specific/linux/firebird-superserver.service.in
++++ b/builds/install/arch-specific/linux/firebird-superserver.service.in
+@@ -9,7 +9,6 @@ User=firebird
+ Group=firebird
+ Type=forking
+ ExecStart=@FB_SBINDIR@/fbguard -daemon -forever
+-StandardError=syslog
+ 
+ [Install]
+ WantedBy=multi-user.target
