@@ -47,6 +47,11 @@ namespace Firebird
 			return refCnt;
 		}
 
+		void assertNonZero()
+		{
+			fb_assert(m_refCnt.value() > 0);
+		}
+
 	protected:
 		RefCounted() : m_refCnt(0) {}
 
@@ -140,22 +145,12 @@ namespace Firebird
 			return assign(r.ptr);
 		}
 
-		operator T*()
+		operator T*() const
 		{
 			return ptr;
 		}
 
-		T* operator->()
-		{
-			return ptr;
-		}
-
-		operator const T*() const
-		{
-			return ptr;
-		}
-
-		const T* operator->() const
+		T* operator->() const
 		{
 			return ptr;
 		}

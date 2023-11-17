@@ -14,4 +14,4 @@
 libib-util: shlib-without-versioned-soname usr/lib/*/libib_util.so libib_util.so
 
 # this is not a dev package
-libib-util: dev-pkg-without-shlib-symlink usr/lib/*/libib_util.so usr/lib/*/libib_util.so
+libib-util: lacks-unversioned-link-to-shared-library example: usr/lib/TRIPLET/libib_util.so [usr/lib/TRIPLET/libib_util.so]

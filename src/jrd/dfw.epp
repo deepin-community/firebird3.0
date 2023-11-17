@@ -2588,10 +2588,9 @@ static bool grant_privileges(thread_db* tdbb, SSHORT phase, DeferredWork* work, 
 	switch (phase)
 	{
 	case 1:
-	case 2:
 		return true;
 
-	case 3:
+	case 2:
 		GRANT_privileges(tdbb, work->dfw_name, work->dfw_id, transaction);
 		break;
 
@@ -4457,9 +4456,9 @@ static void check_partners(thread_db* tdbb, const USHORT rel_id)
 	jrd_rel *relation = (*relations)[rel_id];
 	fb_assert(relation);
 
+	relation->rel_flags |= REL_check_partners;
 	LCK_lock(tdbb, relation->rel_partners_lock, LCK_EX, LCK_WAIT);
 	LCK_release(tdbb, relation->rel_partners_lock);
-	relation->rel_flags |= REL_check_partners;
 }
 
 
@@ -4825,6 +4824,7 @@ static bool delete_relation(thread_db* tdbb, SSHORT phase, DeferredWork* work, j
 	case 4:
 		relation = MET_lookup_relation_id(tdbb, work->dfw_id, true);
 		if (!relation) {
+			fb_assert(false);
 			return false;
 		}
 
@@ -5900,9 +5900,26 @@ static bool make_version(thread_db* tdbb, SSHORT phase, DeferredWork* work, jrd_
 
 							defaultRequest->req_timestamp.validate();
 
-							TRA_attach_request(transaction, defaultRequest);
-							dsc* result = EVL_expr(tdbb, defaultRequest, defaultNode);
-							TRA_detach_request(defaultRequest);
+							dsc* result = NULL;
+							{ // scope
+								class LocalClean
+								{
+								public:
+									LocalClean(jrd_req* const def)
+										: defaultRequest(def)
+									{ }
+									~LocalClean()
+									{
+										TRA_detach_request(defaultRequest);
+									}
+								private:
+									jrd_req* const defaultRequest;
+								};
+
+								LocalClean detach(defaultRequest);
+								TRA_attach_request(transaction, defaultRequest);
+								result = EVL_expr(tdbb, defaultRequest, defaultNode);
+							}
 
 							if (result)
 							{

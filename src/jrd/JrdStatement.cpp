@@ -380,18 +380,17 @@ jrd_req* JrdStatement::getRequest(thread_db* tdbb, USHORT level)
 	if (level < requests.getCount() && requests[level])
 		return requests[level];
 
-	requests.grow(level + 1);
-
+	// Create the request.
 	MemoryStats* const parentStats = (flags & FLAG_INTERNAL) ?
 		&dbb->dbb_memory_stats : &attachment->att_memory_stats;
 
-	// Create the request.
-	jrd_req* const request = FB_NEW_POOL(*pool) jrd_req(attachment, this, parentStats);
+	AutoPtr<jrd_req> request(FB_NEW_POOL(*pool) jrd_req(attachment, this, parentStats));
 	request->req_id = dbb->generateStatementId(tdbb);
 
+	requests.grow(level + 1);
 	requests[level] = request;
 
-	return request;
+	return request.release();
 }
 
 // Check that we have enough rights to access all resources this request touches including
@@ -593,7 +592,10 @@ void JrdStatement::release(thread_db* tdbb)
 	}
 
 	for (jrd_req** instance = requests.begin(); instance != requests.end(); ++instance)
-		EXE_release(tdbb, *instance);
+	{
+		if (*instance)
+			EXE_release(tdbb, *instance);
+	}
 
 	sqlText = NULL;
 

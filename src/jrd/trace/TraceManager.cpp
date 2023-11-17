@@ -259,11 +259,26 @@ void TraceManager::update_session(const TraceSession& session)
 				try
 				{
 					EngineCheckout guard(attachment, FB_FUNCTION);
+
+					AutoRestore2<JAttachment*, Attachment> autoInterface(attachment, &Attachment::getInterface, &Attachment::setInterface);
+					JAttachment tempAtt(attachment->getStable());
+					if (!attachment->getInterface())
+					{
+						tempAtt.addRef();
+						autoInterface.set(&tempAtt);
+					}
+
 					mapUser(s_user, t_role, NULL, NULL, session.ses_auth,
 						attachment->att_filename.c_str(), dbb->dbb_filename.c_str(),
-						dbb->dbb_config->getSecurityDatabase(),
-						dbb->dbb_callback, attachment->getInterface(),
-						false);
+						dbb->dbb_config->getSecurityDatabase(), dbb->dbb_callback,
+						attachment->getInterface(), false);
+
+#ifdef DEV_BUILD
+					// Very dirty solution but there is no need frontporting it and
+					// for old version that should be acceptable in order to avoid assertion
+					// instead of backporting a lot of code
+					memset(&tempAtt, 0, sizeof(JAttachment));
+#endif
 				}
 				catch (const Firebird::Exception&)
 				{

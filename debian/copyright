@@ -2,6 +2,12 @@ Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: Firebird
 Upstream-Contact: https://www.firebirdsql.org/
 Files-Excluded:
+ .editorconfig
+ .gitignore
+ */.gitignore
+ .github
+ .vscode
+ appveyor.yml
  builds/install/arch-specific/linux/firebird.init.d.suse.in
  builds/install/arch-specific/solaris
  builds/install/arch-specific/solx86gcc/CS/postinstall.in
@@ -20,6 +26,7 @@ Files-Excluded:
  doc/README.build.mingw.html
  doc/README.build.msvc.html
  doc/README.build.posix.html
+ doc/README.makefiles
  doc/README.plugins.html
  doc/README.providers.html
  doc/README.SecureRemotePassword.html
@@ -39,6 +46,8 @@ Files-Excluded:
  src/include/gen/ids.h
  src/include/gen/parse.h
  src/msgs/templates.sql
+ src/utilities/fbcpl
+ src/utilities/install/registry.h
 Comment:
  What is removed from upstream source and why
  ============================================
@@ -65,8 +74,10 @@ Comment:
  they are not needed when building on Debiian.
  .
   - builds/install/arch-specific/solaris/
+  - doc/README.makefiles
   - src/msgs/templates.sql
   - extern/SfIO/
+  - src/utilities/install/registry.h
  .
  * Generated files without source
  .
@@ -75,6 +86,11 @@ Comment:
   - doc/Firebird-3-QuickStart.pdf
   - doc/ReleaseNotes.pdf
   - doc/README.SecureRemotePassword.html
+ .
+  * Other generated files and files with possible missing licensing that are
+   needed only on Windows
+ .
+  - src/utilities/fbcpl/*
  .
  * Generated files and other cruft.
  .
@@ -91,8 +107,17 @@ Comment:
  Also, the following files are just cruft and are present in the upstream 
  tarball by mistake:
   - .cvsignore (in several directories)
+ .
+ These aren't tipicaly present in released tarballs, but are in upstream Git
+ and therefore in snapshot tarballs made from the release branch
+ .editorconfig
+ .gitignore (in several directories)
+ .github
+ .vscode
+ appveyor.yml
 
-Files: debian/*
+Files:
+ debian/*
 Copyright: © 2006, 2007, 2008, 2009, 2010, 2014, 2017, 2018
              Damyan Ivanov <dmn@debian.org>
 License: other
@@ -278,8 +303,6 @@ Files:
  src/misc/pascal/Pascal.implementation.pas
  src/misc/pascal/Pascal.interface.pas
  src/misc/upgrade/recovering_build.txt
- src/misc/upgrade/v2.1/metadata_charset_create.sql
- src/misc/upgrade/v2.1/metadata_charset_drop.sql
  src/misc/upgrade/v2/ib_udf2_params.txt
  src/misc/upgrade/v2/ib_udf_params.txt
  src/misc/upgrade/v2/security_database.txt
@@ -302,23 +325,8 @@ Files:
  src/remote/server/os/win32/window_proto.h
  src/utilities/CMakeLists.txt
  src/utilities/create_db.cpp
- src/utilities/fbcpl/ctrlpan.cpp
- src/utilities/fbcpl/ctrlpan.h
- src/utilities/fbcpl/fbcontrol.clw
- src/utilities/fbcpl/fbcontrol.cpp
- src/utilities/fbcpl/fbcontrol.def
- src/utilities/fbcpl/fbcontrol.h
- src/utilities/fbcpl/FBControl.rc
- src/utilities/fbcpl/res/fbcontrol.rc2
- src/utilities/fbcpl/resource.h
- src/utilities/fbcpl/res/server.ico
- src/utilities/fbcpl/res/server_stop.ico
- src/utilities/fbcpl/stdafx.cpp
- src/utilities/fbcpl/stdafx.h
  src/utilities/gsec/gsec_proto.h
  src/utilities/ntrace/fbtrace.conf
- travis.sh
- .travis.yml
 Copyright: none
 License: public-domain
  (assumed)
@@ -331,7 +339,8 @@ License: public-domain
    contains no header, it means that this code is freeware and nobody owns the
    appropriate copyrights.
 
-Files: src/common/sha.cpp
+Files:
+ src/common/sha.cpp
 Copyright: none
 License: public-domain
  NIST Secure Hash Algorithm
@@ -340,8 +349,9 @@ License: public-domain
  Applied Cryptography by Bruce Schneier
  This code is in the public domain
 
-Files: src/common/sha2/sha2.cpp
-       src/common/sha2/sha2.h
+Files:
+ src/common/sha2/sha2.cpp
+ src/common/sha2/sha2.h
 Copyright: 2005, 2007, Olivier Gay <olivier.gay@a3.epfl.ch>
 License: BSD-3-clause
  Redistribution and use in source and binary forms, with or without
@@ -479,6 +489,8 @@ Files:
  src/alice/exe_proto.h
  src/alice/tdr.cpp
  src/alice/tdr_proto.h
+ src/auth/SecDbCache.cpp
+ src/auth/SecDbCache.h
  src/auth/SecurityDatabase/LegacyHash.h
  src/auth/SecurityDatabase/LegacyManagement.epp
  src/auth/SecurityDatabase/LegacyServer.cpp
@@ -511,6 +523,8 @@ Files:
  src/common/classes/NoThrowTimeStamp.cpp
  src/common/classes/timestamp.cpp
  src/common/common.h
+ src/common/config/dir_list.cpp
+ src/common/config/dir_list.h
  src/common/cvt.cpp
  src/common/dsc.cpp
  src/common/dsc.h
@@ -1135,7 +1149,6 @@ Files:
  src/utilities/install/install_svc.cpp
  src/utilities/install/regis_proto.h
  src/utilities/install/registry.cpp
- src/utilities/install/registry.h
  src/utilities/install/services.cpp
  src/utilities/install/servi_proto.h
  src/utilities/print_event.cpp
@@ -1175,53 +1188,82 @@ Files:
  src/yvalve/why_proto.h
  src/yvalve/YObjects.h
 Copyright:
- Inprise Corporation and its predecessors
  Adriano dos Santos Fernandes
- Alan Barclay
+ 2006, Adriano dos Santos Fernandes
+ 2008, Alan Barclay <alan@escribe.co.uk>
  Alex Peshkoff
+ 2003, 2004, Alex Peshkoff
+ Alex Peshkov
  Alex Peshkov <peshkoff@mail.ru>
+ 2009, 2013, 2020, Alex Peshkov
+ 2011-2020, Alexander Peshkov
  Ann Harrison
- Ann W. Harrison
- Arno Brinkman
+ 2001, Ann Harrison
+ 2001, Ann W. Harrison
+ 2002, 2003, Arno Brinkman
  Bill Oliver
  Blas Rodriguez Somoza
+ 2003 Blas Rodriguez Somoza
+ 2003 BRS
+ 1992-1994, 1996, Borland International
+ Clare Taylor
  Claudio Valderrama
  Claudio Valderrama C.
+ 2001, Claudio Valderrama
  Damyan Ivanov
  Dimitry Sibiryakov <aafemt@users.sourceforge.net>
  Dmitry Yemanov
+ Dmitry Yemanov <yemanov@yandex.ru>
+ 2002, 2003, Dmitry Yemanov
  Fikret Hasovic
  Frank Schlottmann-Gödde
- Fred Polizo, Jr.
- FSG (Frank Schlottmann-Gödde)
+ 2003, Fred Polizo, Jr.
+ 2002, FSG (Frank Schlottmann-Gödde)
  Gabor Boros
+ 1986, Groton Database Systems, Inc.
+ Inprise Corporation and its predecessors
+ 2000, Inprise Corporation
  Ivan Prenosil
  Jaroslaw Glowacki <glowacki@plocman.pl>
  Jerry Adair
  John Bellardo
+ 2001, John Bellardo
+ John H. Jenkins <John_Jenkins@taligent.com>
  Jonas Jasas
+ K.D.Chang   <a-kchang@microsoft.com>
  Karel Brichnac <brichna@atlas.cz>
  Konstantin Kuznetsov
+ 2002, Leyne
  Manuel A. Fernandez Montecelo
- Mark O'Donohue skywalker@users.sourceforge.net
+ 2018, Manuel A. Fernandez Montecelo <manuel.montezelo@gmail.com>
+ Mark O'Donohue <skywalker@users.sourceforge.net>
  Michal Bukovjan
  Mike Nordell
+ 2001, Mike Nordell
  Neil McCalden
+ 2001, Neil McCalden
  Nickolay Samofatov
  Nikolay Samofatov
+ 2002, 2003, Nickolay Samofatov
  patrickgriffin
  Patrick J. P. Griffin
  Paul Beach
+ 2001, 2002, Paul Beach
  Paul Reeves
  Roman Simakov
  Sandor Szollosi <ssani@freemail.hu>
  Sean Leyne
+ 2001, 2002, Sean Leyne
+ 2001, SJL
  Slavomir Skopalik
  Stephen W. Boyd
+ 2006, 2007, Stephen W. Boyd
  Steve Boyd
  TMN (Mike Nordell)
+ 2001, TMN (Mike Nordell)
  Toni Martir
  Victor Seryodkin
+ 2003, Victor Seryodkin
  Vlad Horsun
 License: IPL-1.0
 Comment:
@@ -1250,12 +1292,10 @@ Files:
  builds/install/posix-common/FirebirdUninstall.sh.in
  builds/install/posix-common/install.sh.in
  builds/install/posix-common/posixLibrary.sh.in
- builds/install/posix-common/registerDatabase.sh.in
  builds/posix/empty.vers
  builds/posix/fbintl.vers
  builds/posix/fbplugin.vers
  builds/posix/ib_util.vers
- builds/posix/make.rules
  builds/posix/udr_plugin.vers
  builds/posix/vers.sh.in
  builds/win32/defs/plugin.def
@@ -1297,8 +1337,6 @@ Files:
  src/alice/main/aliceMain.cpp
  src/auth/AuthDbg.cpp
  src/auth/AuthDbg.h
- src/auth/SecDbCache.cpp
- src/auth/SecDbCache.h
  src/auth/SecureRemotePassword/client/SrpClient.cpp
  src/auth/SecureRemotePassword/client/SrpClient.h
  src/auth/SecureRemotePassword/manage/SrpManagement.cpp
@@ -1401,8 +1439,6 @@ Files:
  src/common/config/config_file.cpp
  src/common/config/config_file.h
  src/common/config/config.h
- src/common/config/dir_list.cpp
- src/common/config/dir_list.h
  src/common/CRC32C.cpp
  src/common/CsConvert.h
  src/common/cvt.h
@@ -1606,6 +1642,8 @@ Files:
  src/misc/smallog.cpp
  src/misc/src_bundle.sh
  src/misc/upgrade/v2.1/metadata_charset.txt
+ src/misc/upgrade/v2.1/metadata_charset_create.sql
+ src/misc/upgrade/v2.1/metadata_charset_drop.sql
  src/misc/upgrade/v2/ib_udf_upgrade.sql
  src/misc/upgrade/v2/security_database.sql
  src/misc/upgrade/v3.0/security_database.sql
@@ -1617,10 +1655,6 @@ Files:
  src/remote/client/BlrFromMessage.h
  src/remote/client/interface.h
  src/remote/SockAddr.h
- src/utilities/fbcpl/fbdialog.cpp
- src/utilities/fbcpl/fbdialog.h
- src/utilities/fbcpl/fbpanel.cpp
- src/utilities/fbcpl/fbpanel.h
  src/utilities/fbsvcmgr/fbsvcmgr.cpp
  src/utilities/fbtracemgr/traceMgrMain.cpp
  src/utilities/gsec/main/gsecMain.cpp
@@ -1756,6 +1790,7 @@ Files:
  builds/install/arch-specific/netbsd/install.sh.in
  builds/install/arch-specific/netbsd/Makefile.in
  builds/install/arch-specific/solx86gcc/Makefile.in
+ builds/install/posix-common/registerDatabase.sh.in
  builds/posix/Makefile.in
  builds/posix/Makefile.in.examples
  builds/posix/Makefile.in.extern.editline
@@ -1814,10 +1849,11 @@ Comment:
 
 Files:
  builds/posix/make.defaults
+ builds/posix/make.rules
  examples/build_unix/Makefile.in.example5
 Copyright:
  Mark O'Donohue <mark.odonohue@ludwig.edu.au>
-License: MPL-1.1-or-GPL-2+
+License: MPL-1.1 or GPL-2+
  The contents of this file are subject to the Mozilla Public License Version 
  1.1 (the "License"); you may not use this file except in compliance with the 
  License. You may obtain a copy of the License at http://www.mozilla.org/MPL/
@@ -1873,7 +1909,8 @@ License: bsd-like
  OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  SUCH DAMAGE.
 
-Files: acx_pthread.m4
+Files:
+ acx_pthread.m4
 Copyright: © 2007 Steven G. Johnson <stevenj@alum.mit.edu>
 License: GPL-3+ with autoconf exception
  Available from the GNU Autoconf Macro Archive
@@ -1910,7 +1947,8 @@ License: GPL-3+ with autoconf exception
  The full text of GNU General Public License version 3 can be found at
  /usr/share/common-licenses/GPL-3 on every Debian system.
 
-Files: extern/btyacc/*
+Files:
+ extern/btyacc/*
 Copyright: Chris Dodd <chrisd@collins.com>, Siber Systems <vadik@siber.com>
 License: public-domain
  BTYACC was created by Chris Dodd using ideas from many places and lots of 

@@ -1061,6 +1061,8 @@ bool Validation::run(thread_db* tdbb, USHORT flags)
 		err.printf("Database: %s\n\tValidation aborted", fileName.c_str());
 		iscLogStatus(err.c_str(), tdbb->tdbb_status_vector);
 
+		CCH_unwind(tdbb, false);
+
 		cleanup();
 		dbb->deletePool(val_pool);
 		return false;
@@ -3094,24 +3096,33 @@ Validation::RTN Validation::walk_relation(jrd_rel* relation)
 	}
 
 	}	// try
-	catch (const Firebird::Exception&)
+	catch (const Firebird::Exception& ex)
 	{
-		if (!(vdr_flags & VDR_online))
-		{
-			const char* msg = relation->rel_name.length() > 0 ?
-				"bugcheck during scan of table %d (%s)" :
-				"bugcheck during scan of table %d";
-			gds__log(msg, relation->rel_id, relation->rel_name.c_str());
-		}
 #ifdef DEBUG_VAL_VERBOSE
 		if (VAL_debug_level)
 		{
-			char s[256];
+			char s[BUFFER_SMALL];
 			SNPRINTF(s, sizeof(s), msg, relation->rel_id, relation->rel_name.c_str());
 			fprintf(stdout, "LOG:\t%s\n", s);
 		}
 #endif
-		throw;
+		string msg;
+		if (relation->rel_name.hasData())
+		{
+			msg.printf("Error during scan of table %d (%s)",
+					   relation->rel_id, relation->rel_name.c_str());
+		}
+		else
+		{
+			msg.printf("Error during scan of table %d", relation->rel_id);
+		}
+
+		FbLocalStatus tempStatus;
+		ex.stuffException(&tempStatus);
+
+		Arg::StatusVector tempVector(&tempStatus);
+		tempVector.prepend(Arg::Gds(isc_random) << Arg::Str(msg));
+		tempVector.raise();
 	}
 
 	return rtn_ok;

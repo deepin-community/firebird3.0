@@ -163,23 +163,19 @@ void IscConnection::attach(thread_db* tdbb, const PathName& dbName, const string
 		raise(&status, tdbb, "isc_database_info");
 	}
 
-	const char* p = buff, *end = buff + sizeof(buff);
-	while (p < end)
+	for (ClumpletReader p(ClumpletReader::InfoResponse, (UCHAR*)buff, sizeof(buff)); !p.isEof(); p.moveNext())
 	{
-		const UCHAR item = *p++;
-		const USHORT len = m_iscProvider.isc_vax_integer(p, sizeof(USHORT));
-		p += sizeof(USHORT);
-
-		switch (item)
+		const UCHAR* b = p.getBytes();
+		switch (p.getClumpTag())
 		{
 			case isc_info_db_sql_dialect:
-				m_sqlDialect = m_iscProvider.isc_vax_integer(p, len);
+				m_sqlDialect = p.getInt();
 				break;
 
 			case isc_info_error:
-				if (*p == isc_info_db_sql_dialect)
+				if (p.getClumpLength() > 1 && b[0] == isc_info_db_sql_dialect)
 				{
-					const ULONG err = m_iscProvider.isc_vax_integer(p + 1, len - 1);
+					const ULONG err = m_iscProvider.isc_vax_integer((const char*)(b + 1), p.getClumpLength() - 1);
 					if (err == isc_infunk)
 					{
 						// Remote server don't understand isc_info_db_sql_dialect.
@@ -192,12 +188,7 @@ void IscConnection::attach(thread_db* tdbb, const PathName& dbName, const string
 
 			case isc_info_truncated:
 				ERR_post(Arg::Gds(isc_random) << Arg::Str("Unexpected error in isc_database_info"));
-
-			case isc_info_end:
-				p = end;
-				break;
 		}
-		p += len;
 	}
 }
 

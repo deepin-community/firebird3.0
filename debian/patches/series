@@ -1,5 +1,6 @@
 upstream/riscv64-support.patch
 upstream/systemd-service-documentation.patch
+upstream/mipsel64_loongarch.patch
 out/riscv64-prefix.patch
 out/obsolete-syslogd.target.patch
 upstream/systemd-service-stderr.patch

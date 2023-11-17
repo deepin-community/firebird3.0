@@ -116,22 +116,12 @@ public:
 		return *this;
 	}
 
-	operator Where*()
+	Where* get() const
 	{
 		return ptr;
 	}
 
-	Where* get()
-	{
-		return ptr;
-	}
-
-	operator const Where*() const
-	{
-		return ptr;
-	}
-
-	const Where* get() const
+	operator Where*() const
 	{
 		return ptr;
 	}
@@ -146,12 +136,7 @@ public:
 		return ptr != NULL;
 	}
 
-	Where* operator->()
-	{
-		return ptr;
-	}
-
-	const Where* operator->() const
+	Where* operator->() const
 	{
 		return ptr;
 	}
@@ -257,35 +242,52 @@ private:
 
 
 template <typename T, typename T2>
-class AutoSetRestore2
+class AutoRestore2
 {
-private:
+protected:
 	typedef T (T2::*Getter)();
 	typedef void (T2::*Setter)(T);
 
 public:
-	AutoSetRestore2(T2* aPointer, Getter aGetter, Setter aSetter, T newValue)
+	AutoRestore2(T2* aPointer, Getter aGetter, Setter aSetter)
 		: pointer(aPointer),
 		  setter(aSetter),
 		  oldValue((aPointer->*aGetter)())
+	{ }
+
+	void set(T newValue)
 	{
-		(aPointer->*aSetter)(newValue);
+		(pointer->*setter)(newValue);
 	}
 
-	~AutoSetRestore2()
+	~AutoRestore2()
 	{
 		(pointer->*setter)(oldValue);
 	}
 
 private:
 	// copying is prohibited
-	AutoSetRestore2(const AutoSetRestore2&);
-	AutoSetRestore2& operator =(const AutoSetRestore2&);
+	AutoRestore2(const AutoRestore2&);
+	AutoRestore2& operator =(const AutoRestore2&);
 
 private:
 	T2* pointer;
 	Setter setter;
 	T oldValue;
+};
+
+
+template <typename T, typename T2>
+class AutoSetRestore2 : public AutoRestore2<T, T2>
+{
+	typedef typename AutoRestore2<T, T2>::Getter Getter;
+	typedef typename AutoRestore2<T, T2>::Setter Setter;
+public:
+	AutoSetRestore2(T2* aPointer, Getter aGetter, Setter aSetter, T newValue)
+		: AutoRestore2<T, T2>(aPointer, aGetter, aSetter)
+	{
+		this->set(newValue);
+	}
 };
 
 

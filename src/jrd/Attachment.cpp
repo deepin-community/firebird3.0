@@ -735,10 +735,10 @@ void Jrd::Attachment::SyncGuard::init(const char* f, bool
 
 	if (jStable)
 	{
-		jStable->getMutex()->enter(f);
+		jStable->getSync()->enter(f);
 		if (!jStable->getHandle())
 		{
-			jStable->getMutex()->leave();
+			jStable->getSync()->leave();
 			Arg::Gds(isc_att_shutdown).raise();
 		}
 	}
@@ -752,8 +752,8 @@ void AttachmentsRefHolder::debugHelper(const char* from)
 void StableAttachmentPart::manualLock(ULONG& flags)
 {
 	fb_assert(!(flags & ATT_manual_lock));
-	asyncMutex.enter(FB_FUNCTION);
-	mainMutex.enter(FB_FUNCTION);
+	async.enter(FB_FUNCTION);
+	mainSync.enter(FB_FUNCTION);
 	flags |= (ATT_manual_lock | ATT_async_manual_lock);
 }
 
@@ -762,7 +762,7 @@ void StableAttachmentPart::manualUnlock(ULONG& flags)
 	if (flags & ATT_manual_lock)
 	{
 		flags &= ~ATT_manual_lock;
-		mainMutex.leave();
+		mainSync.leave();
 	}
 	manualAsyncUnlock(flags);
 }
@@ -772,13 +772,18 @@ void StableAttachmentPart::manualAsyncUnlock(ULONG& flags)
 	if (flags & ATT_async_manual_lock)
 	{
 		flags &= ~ATT_async_manual_lock;
-		asyncMutex.leave();
+		async.leave();
 	}
 }
 
 JAttachment* Attachment::getInterface() throw()
 {
 	return att_stable->getInterface();
+}
+
+void Attachment::setInterface(JAttachment* iface) throw()
+{
+	att_stable->setInterface(iface);
 }
 
 UserId* Attachment::getUserId(const string& userName)

@@ -34,7 +34,8 @@ VER=$(upstream_ver PRODUCT_VER_STRING)
 echo "Version is $VER"
 
 TAR="firebird3.0-$VER"
+DS=$(perl -F, -anwE'for (@F) { say($_), exit if s/^repacksuffix=([^"]+).*/$1/ }' debian/watch)
 
-git archive --format=tar "--prefix=$TAR/" "$HEAD" | gzip -9 -n > "../$TAR.tar.gz"
+git archive --format=tar "--prefix=$TAR/" "$HEAD" | pigz -9 -n > "../$TAR.tar.gz"
 
-sh debian/repack.sh --upstream-version "$VER" "../$TAR.tar.gz"
+mk-origtargz --force-repack --repack-suffix="$DS" --compression=xz --version "$VER" "../$TAR.tar.gz"
