@@ -1,3 +1,49 @@
+firebird3.0 (3.0.11.33703.ds4-2) unstable; urgency=medium
+
+  * Bump policy-compliance version to 4.6.2 (no changes needed)
+  * drop dependency on lsb-base
+
+ -- Damyan Ivanov <dmn@debian.org>  Tue, 26 Sep 2023 10:25:06 +0000
+
+firebird3.0 (3.0.11.33703.ds4-1) unstable; urgency=medium
+
+  * New official upstream release
+
+  * add patch adding support for mipsel64 and loongarch
+    adapted from upstream commit fcc471e420525dbd4a1dda59ed51487d5ead5921
+    (Closes: #1042066, #1051444)
+  * refresh patch offsets
+
+ -- Damyan Ivanov <dmn@debian.org>  Mon, 25 Sep 2023 19:40:38 +0000
+
+firebird3.0 (3.0.11.33637.ds4-2) unstable; urgency=medium
+
+  * fix arch-all-only build by overriding only dh_lintian-arch for libib-util
+    override mangling.
+    Thanks to Ondřej Surý (Closes: #1022579)
+
+ -- Damyan Ivanov <dmn@debian.org>  Mon, 24 Oct 2022 19:36:38 +0000
+
+firebird3.0 (3.0.11.33637.ds4-1) unstable; urgency=medium
+
+  * add gbp.conf for DEP-14 git repository layout
+  * switch debian/watch to releases published on firebirdsql.org
+    the ones on github aren't always accessible (JavaScript)
+  * pack-upstream-snapshot: use mk-origtargz for cleaning upstream sources
+    single source of truth about what needs to be removed
+  * add files to source repackaging exclusion list to match official releases
+    when using git snapshots
+  * New upstream snapshot 3.0.11.33637.ds4
+    Closes: #1021817 -- undistributable source files
+  * drop two files from d/copyright that are not present in the source
+  * adapt lintian overrides to version 2.115.3
+  * bump Standards-Version from 4.6.0 to 4.6.1 (no changes needed)
+  * review debian/copyright, move files under right licensing stanza, update
+    copyright years, drop additional files with missing/unclear licenses when
+    repackaging
+
+ -- Damyan Ivanov <dmn@debian.org>  Sun, 23 Oct 2022 18:48:29 +0000
+
 firebird3.0 (3.0.10.33601.ds4-1) unstable; urgency=medium
 
   * New upstream version 3.0.10.33601.ds4

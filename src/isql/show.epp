@@ -46,6 +46,7 @@
 #include "../jrd/intl.h"
 #include "../common/intlobj_new.h"
 #include "../common/classes/AlignedBuffer.h"
+#include "../common/classes/ClumpletReader.h"
 #include "../isql/isql_proto.h"
 #include "../isql/show_proto.h"
 #include "../isql/iutils_proto.h"
@@ -402,12 +403,12 @@ bool SHOW_dbb_parameters(Firebird::IAttachment* db_handle,
 
 	*info_buf = '\0';
 	SCHAR* info = info_buf;
-	for (const UCHAR* d = buffer; *d != isc_info_end;)
+
+	for (Firebird::ClumpletReader p(Firebird::ClumpletReader::InfoResponse, buffer, sizeof(buffer)); !p.isEof(); p.moveNext())
 	{
+		UCHAR item = p.getClumpTag();
 		SINT64 value_out = 0;
-		const UCHAR item = *d++;
-		const int length = ISQL_vax_integer(d, 2);
-		d += 2;
+
 		/*
 		 * This is not the best solution but it fixes the lack of <LF> characters
 		 * in Windows ISQL.  This will need to remain until we modify the messages
@@ -420,12 +421,12 @@ bool SHOW_dbb_parameters(Firebird::IAttachment* db_handle,
 			break;
 
 		case isc_info_page_size:
-			value_out = ISQL_vax_integer(d, length);
+			value_out = p.getInt();
 			sprintf(info, "PAGE_SIZE %" SQUADFORMAT"%s", value_out, separator);
 			break;
 
 		case isc_info_db_size_in_pages:
-			value_out = ISQL_vax_integer(d, length);
+			value_out = p.getInt();
 			if (translate)
 			{
 				IUTILS_msg_get(NUMBER_PAGES, msg, SafeArg() << value_out);
@@ -436,7 +437,7 @@ bool SHOW_dbb_parameters(Firebird::IAttachment* db_handle,
 			break;
 
 		case fb_info_pages_used:
-			value_out = ISQL_vax_integer(d, length);
+			value_out = p.getInt();
 			if (translate)
 			{
 				IUTILS_msg_get(NUMBER_USED_PAGES, msg, SafeArg() << value_out);
@@ -447,7 +448,7 @@ bool SHOW_dbb_parameters(Firebird::IAttachment* db_handle,
 			break;
 
 		case fb_info_pages_free:
-			value_out = ISQL_vax_integer(d, length);
+			value_out = p.getInt();
 			if (translate)
 			{
 				IUTILS_msg_get(NUMBER_FREE_PAGES, msg, SafeArg() << value_out);
@@ -458,8 +459,7 @@ bool SHOW_dbb_parameters(Firebird::IAttachment* db_handle,
 			break;
 
 		case fb_info_crypt_state:
-			value_out = ISQL_vax_integer(d, length);
-
+			value_out = p.getInt();
 			if (translate)
 			{
 				Firebird::string s;
@@ -489,7 +489,7 @@ bool SHOW_dbb_parameters(Firebird::IAttachment* db_handle,
 			break;
 
 		case isc_info_sweep_interval:
-			value_out = ISQL_vax_integer(d, length);
+			value_out = p.getInt();
 			if (translate)
 			{
 				IUTILS_msg_get(SWEEP_INTERV, msg, SafeArg() << value_out);
@@ -500,32 +500,32 @@ bool SHOW_dbb_parameters(Firebird::IAttachment* db_handle,
 			break;
 
 		case isc_info_forced_writes:
-			value_out = ISQL_vax_integer (d, length);
+			value_out = p.getInt();
 			sprintf (info, "Forced Writes are %s%s", (value_out == 1 ? "ON" : "OFF"), separator);
 			break;
 
 		case isc_info_oldest_transaction :
-			value_out = ISQL_vax_integer (d, length);
+			value_out = p.getInt();
 			sprintf(info, "Transaction - oldest = %" SQUADFORMAT"%s", value_out, separator);
 			break;
 
 		case isc_info_oldest_active :
-			value_out = ISQL_vax_integer (d, length);
+			value_out = p.getInt();
 			sprintf(info, "Transaction - oldest active = %" SQUADFORMAT"%s", value_out, separator);
 			break;
 
 		case isc_info_oldest_snapshot :
-			value_out = ISQL_vax_integer (d, length);
+			value_out = p.getInt();
 			sprintf(info, "Transaction - oldest snapshot = %" SQUADFORMAT"%s", value_out, separator);
 			break;
 
 		case isc_info_next_transaction :
-			value_out = ISQL_vax_integer (d, length);
+			value_out = p.getInt();
 			sprintf (info, "Transaction - Next = %" SQUADFORMAT"%s", value_out, separator);
 			break;
 
 		case isc_info_base_level:
-			value_out = ISQL_vax_integer(d, length);
+			value_out = p.getInt();
 			if (translate)
 			{
 				IUTILS_msg_get(BASE_LEVEL, msg, SafeArg() << value_out);
@@ -536,7 +536,7 @@ bool SHOW_dbb_parameters(Firebird::IAttachment* db_handle,
 			break;
 
 		case isc_info_limbo:
-			value_out = ISQL_vax_integer(d, length);
+			value_out = p.getInt();
 			if (translate)
 			{
 				IUTILS_msg_get(LIMBO, msg, SafeArg() << value_out);
@@ -547,23 +547,23 @@ bool SHOW_dbb_parameters(Firebird::IAttachment* db_handle,
 			break;
 
 		case isc_info_ods_version:
-			isqlGlob.major_ods = ISQL_vax_integer(d, length);
+			isqlGlob.major_ods = p.getInt();
 			break;
 		case isc_info_ods_minor_version:
-			value_out = ISQL_vax_integer(d, length);
+			value_out = p.getInt();
 			sprintf(info, "ODS = %" SLONGFORMAT".%" SQUADFORMAT"%s",
 					(SLONG) isqlGlob.major_ods, value_out, separator);
 			break;
 
 		case isc_info_creation_date:
-			if (length == sizeof(ISC_TIMESTAMP))
+			if (p.getClumpLength() == sizeof(ISC_TIMESTAMP))
 			{
 				ISC_TIMESTAMP ts;
 
-				const UCHAR* p = d;
-				ts.timestamp_date = ISQL_vax_integer(p, sizeof(ISC_DATE));
-				p += sizeof(ISC_DATE);
-				ts.timestamp_time = ISQL_vax_integer(p, sizeof(ISC_TIME));
+				const UCHAR* t = p.getBytes();
+				ts.timestamp_date = ISQL_vax_integer(t, sizeof(ISC_DATE));
+				t += sizeof(ISC_DATE);
+				ts.timestamp_time = ISQL_vax_integer(t, sizeof(ISC_TIME));
 
 				struct tm time;
 				isc_decode_timestamp(&ts, &time);
@@ -579,8 +579,8 @@ bool SHOW_dbb_parameters(Firebird::IAttachment* db_handle,
 			{
 				// Will print with garbage for now.
 				//It's sprintf(info, "DB/Host = %.*s", length, d);
-				const UCHAR* s = d;
-				const UCHAR* end = s + length;
+				const UCHAR* s = p.getBytes();
+				const UCHAR* end = s + p.getClumpLength();
 				++s; // Skip useless indicator.
 				int len = *s++;
 				printf("DB = %.*s\n", len, s);
@@ -598,8 +598,6 @@ bool SHOW_dbb_parameters(Firebird::IAttachment* db_handle,
 		case isc_info_truncated:
 			return info > info_buf; // If we got some items, we are (partially) successful.
 		}
-
-		d += length;
 		info += strlen(info);
 	}
 
@@ -6306,17 +6304,11 @@ static processing_state show_users()
 
 	bool newline = false;
 	processing_state rc = OBJECT_NOT_FOUND;
-	for (const UCHAR* data = buffer; *data != isc_info_end;)
-	{
-		const UCHAR item = *data++;
-		const int length = gds__vax_integer(data, 2);
-		data += 2;
 
-		switch (item)
+	for (Firebird::ClumpletReader p(Firebird::ClumpletReader::InfoResponse, buffer, sizeof(buffer)); !p.isEof(); p.moveNext())
+ 	{
+		switch (p.getClumpTag())
 		{
-		case isc_info_end:
-			break;
-
 		case isc_info_user_names:
 			{
 				if (rc == OBJECT_NOT_FOUND)
@@ -6327,9 +6319,9 @@ static processing_state show_users()
 					rc = SKIP; // We found at least one user.
 				}
 
-				int len = *data;
-				fb_assert(len == length - 1);
-				const UCHAR* uname = data + 1;
+				unsigned len = p.getBytes()[0];
+				fb_assert(len == p.getClumpLength() - 1);
+				const UCHAR* uname = p.getBytes() + 1;
 				// Let's mark all attachments with our same user with a # prefix.
 				bool same(len == my_user->vary_length && !memcmp(my_user->vary_string, uname, len));
 				isqlGlob.printf("%c %-37.*s", same ? '#' : ' ', len, uname);
@@ -6349,10 +6341,6 @@ static processing_state show_users()
 			isqlGlob.printf("%s\n", msg);
 			return rc; // If we got some items, we are (partially) successful.
 		}
-
-		data += length;
-		if (data >= buffer + sizeof(buffer))
-			break;
 	}
 
 	if (newline) // Last line was without newline.

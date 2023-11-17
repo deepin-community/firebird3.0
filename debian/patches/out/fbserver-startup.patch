@@ -26,7 +26,7 @@ Author: Damyan Ivanov <dmn@debian.org>
  		// Prevent the generation of dummy keepalive packets on the connect port.
 --- a/src/utilities/guard/guard.cpp
 +++ b/src/utilities/guard/guard.cpp
-@@ -162,13 +162,32 @@ int CLIB_ROUTINE main( int argc, char **
+@@ -167,13 +167,32 @@ int CLIB_ROUTINE main( int argc, char **
  		exit(-5);
  	}
  
@@ -59,7 +59,7 @@ Author: Damyan Ivanov <dmn@debian.org>
  
  	do {
  		int ret_code;
-@@ -187,6 +206,18 @@ int CLIB_ROUTINE main( int argc, char **
+@@ -192,6 +211,18 @@ int CLIB_ROUTINE main( int argc, char **
  		}
  		timer = time(0);
  

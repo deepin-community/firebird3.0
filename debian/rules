@@ -172,6 +172,10 @@ ifeq ($(ICU_VER),)
     $(error Unable to determine ICU version)
 endif
 
+override_dh_lintian-arch:
+	dh_lintian
+	sed -i -e "s/TRIPLET/$(shell dpkg-architecture -q DEB_TARGET_MULTIARCH)/g" \
+	    debian/libib-util/usr/share/lintian/overrides/libib-util
 override_dh_installchangelogs:
 	dh_installchangelogs ChangeLog -p firebird$(FB_VER)-common-doc
 override_dh_installdocs:

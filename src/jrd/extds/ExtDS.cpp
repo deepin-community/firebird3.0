@@ -1643,10 +1643,10 @@ void EngineCallbackGuard::init(thread_db* tdbb, Connection& conn, const char* fr
 		{
 			m_saveConnection = attachment->att_ext_connection;
 			m_stable = attachment->getStable();
-			m_stable->getMutex()->leave();
+			m_stable->getSync()->leave();
 
-			MutexLockGuard guardAsync(*m_stable->getMutex(true, true), FB_FUNCTION);
-			MutexLockGuard guardMain(*m_stable->getMutex(), FB_FUNCTION);
+			Jrd::AttSyncLockGuard guardAsync(*m_stable->getSync(true, true), FB_FUNCTION);
+			Jrd::AttSyncLockGuard guardMain(*m_stable->getSync(), FB_FUNCTION);
 			if (m_stable->getHandle() == attachment)
 				attachment->att_ext_connection = &conn;
 		}
@@ -1668,13 +1668,13 @@ EngineCallbackGuard::~EngineCallbackGuard()
 		Jrd::Attachment* attachment = m_tdbb->getAttachment();
 		if (attachment && m_stable.hasData())
 		{
-			MutexLockGuard guardAsync(*m_stable->getMutex(true, true), FB_FUNCTION);
-			m_stable->getMutex()->enter(FB_FUNCTION);
+			Jrd::AttSyncLockGuard guardAsync(*m_stable->getSync(true, true), FB_FUNCTION);
+			m_stable->getSync()->enter(FB_FUNCTION);
 
 			if (m_stable->getHandle() == attachment)
 				attachment->att_ext_connection = m_saveConnection;
 			else
-				m_stable->getMutex()->leave();
+				m_stable->getSync()->leave();
 		}
 
 		jrd_tra* transaction = m_tdbb->getTransaction();

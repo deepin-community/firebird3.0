@@ -6,7 +6,7 @@ Forwarded: no
 
 --- a/configure.ac
 +++ b/configure.ac
-@@ -1244,7 +1244,6 @@ case "$PLATFORM" in
+@@ -1268,7 +1268,6 @@ case "$PLATFORM" in
          gen/install/misc/firebird.xinetd:builds/install/arch-specific/linux/firebird.xinetd.in
          gen/install/misc/firebird.init.d.generic:builds/install/arch-specific/linux/firebird.init.d.generic.in
          gen/install/misc/firebird.init.d.mandrake:builds/install/arch-specific/linux/firebird.init.d.mandrake.in

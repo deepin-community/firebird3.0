@@ -136,7 +136,7 @@ const Config::ConfigEntry Config::entries[MAX_CONFIG_KEY] =
 	{TYPE_INTEGER,		"CpuAffinityMask",			(ConfigValue) 0},
 	{TYPE_INTEGER,		"TcpRemoteBufferSize",		(ConfigValue) 8192},		// bytes
 	{TYPE_BOOLEAN,		"TcpNoNagle",				(ConfigValue) true},
-	{TYPE_BOOLEAN,		"TcpLoopbackFastPath",      (ConfigValue) true},
+	{TYPE_BOOLEAN,		"TcpLoopbackFastPath",      (ConfigValue) false},
 	{TYPE_INTEGER,		"DefaultDbCachePages",		(ConfigValue) -1},			// pages
 	{TYPE_INTEGER,		"ConnectionTimeout",		(ConfigValue) 180},			// seconds
 	{TYPE_INTEGER,		"DummyPacketInterval",		(ConfigValue) 0},			// seconds
@@ -286,7 +286,7 @@ void Config::loadValues(const ConfigFile& file)
 		const ConfigEntry& entry = entries[i];
 		const ConfigFile::Parameter* par = file.findParameter(entry.key);
 
-		if (par)
+		if (par && (par->hasValue || par->sub))
 		{
 			// Assign the actual value
 
@@ -505,8 +505,8 @@ int Config::getDummyPacketInterval() const
 int Config::getLockMemSize() const
 {
 	int size = get<int>(KEY_LOCK_MEM_SIZE);
-	if (size < 64 * 1024)
-		size = 64 * 1024;
+	if (size < 256 * 1024)
+		size = 256 * 1024;
 	return size;
 }
 

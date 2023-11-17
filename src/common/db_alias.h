@@ -28,6 +28,10 @@
 
 class Config;
 
+bool resolveAlias(const Firebird::PathName& alias,
+				  Firebird::PathName& file,
+				  Firebird::RefPtr<const Config>* config);
+
 bool expandDatabaseName(Firebird::PathName alias,
 						Firebird::PathName& file,
 						Firebird::RefPtr<const Config>* config);

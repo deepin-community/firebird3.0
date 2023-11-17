@@ -270,10 +270,43 @@ namespace Jrd {
 		AutoPtr<UCHAR, ArrayDelete> buffer;
 	};
 
+	// Ensures that at least one of attachment's syncs (main or async) is locked
+	class AttachmentAnySyncHolder : public EnsureUnlock<StableAttachmentPart::Sync, NotRefCounted>
+	{
+	public:
+		AttachmentAnySyncHolder(StableAttachmentPart* sAtt)
+			: EnsureUnlock(*(sAtt->getSync(true, true)), FB_FUNCTION),
+			  att(sAtt->getHandle())
+		{
+			if (!sAtt->getSync()->locked())
+				enter();
+		}
+
+		bool hasData()
+		{
+			return att;
+		}
+
+		Attachment* operator->()
+		{
+			return att;
+		}
+
+		operator Attachment*()
+		{
+			return att;
+		}
+
+	private:
+		Attachment* att;
+	};
+
+
 	CryptoManager::CryptoManager(thread_db* tdbb)
 		: PermanentStorage(*tdbb->getDatabase()->dbb_permanent),
 		  sync(this),
 		  keyName(getPool()),
+		  currentPage(0),
 		  keyProviders(getPool()),
 		  keyConsumers(getPool()),
 		  hash(getPool()),
@@ -367,7 +400,7 @@ namespace Jrd {
 
 		// tdbb w/o attachment comes when database is shutting down in the end of detachDatabase()
 		// the only needed here page is header, i.e. we can live w/o cryptPlugin
-		if ((crypt || process) && (!cryptPlugin) && tdbb->getAttachment())
+		if ((crypt || process) && tdbb->getAttachment())
 		{
 			ClumpletWriter hc(ClumpletWriter::UnTagged, hdr->hdr_page_size);
 			hdr.getClumplets(hc);
@@ -376,18 +409,55 @@ namespace Jrd {
 			else
 				keyName = "";
 
-			loadPlugin(tdbb, hdr->hdr_crypt_plugin);
-
-			string valid;
-			calcValidation(valid, cryptPlugin);
-			if (hc.find(Ods::HDR_crypt_hash))
+			if (!cryptPlugin)
 			{
-				hc.getString(hash);
-				if (hash != valid)
-					(Arg::Gds(isc_bad_crypt_key) << keyName).raise();
+				loadPlugin(tdbb, hdr->hdr_crypt_plugin);
+				string valid;
+				calcValidation(valid, cryptPlugin);
+				if (hc.find(Ods::HDR_crypt_hash))
+				{
+					hc.getString(hash);
+					if (hash != valid)
+						(Arg::Gds(isc_bad_crypt_key) << keyName).raise();
+				}
+				else
+					hash = valid;
 			}
 			else
-				hash = valid;
+			{
+				for (GetPlugins<IKeyHolderPlugin> keyControl(IPluginManager::TYPE_KEY_HOLDER, dbb.dbb_config);
+						keyControl.hasData(); keyControl.next())
+				{
+					// check does keyHolder want to provide a key for us
+					IKeyHolderPlugin* keyHolder = keyControl.plugin();
+
+					FbLocalStatus st;
+					int keyCallbackRc = keyHolder->keyCallback(&st, tdbb->getAttachment()->att_crypt_callback);
+					st.check();
+					if (!keyCallbackRc)
+						continue;
+
+					// validate a key
+					AutoPlugin<IDbCryptPlugin> crypt(checkFactory->makeInstance());
+					setDbInfo(crypt);
+					crypt->setKey(&st, 1, &keyHolder, keyName.c_str());
+
+
+					string valid;
+					calcValidation(valid, crypt);
+					if (hc.find(Ods::HDR_crypt_hash))
+					{
+						hc.getString(hash);
+						if (hash == valid)
+						{
+							// unload old plugin and set new one
+							PluginManagerInterfacePtr()->releasePlugin(cryptPlugin);
+							cryptPlugin = NULL;
+							cryptPlugin = crypt.release();
+						}
+					}
+				}
+			}
 		}
 
 		if (cryptPlugin && (flags & CRYPT_HDR_INIT))
@@ -451,7 +521,7 @@ namespace Jrd {
 				if (!keyPlugin->useOnlyOwnKeys(&st))
 				{
 					MutexLockGuard g(holdersMutex, FB_FUNCTION);
-					keyProviders.push(tdbb->getAttachment());
+					keyProviders.add(tdbb->getAttachment()->getStable());
 				}
 				fLoad = true;
 				break;
@@ -494,7 +564,7 @@ namespace Jrd {
 		checkFactory = NULL;
 
 		// store new one
-		if (dbb.dbb_config->getServerMode() == MODE_SUPER && !holderLess)
+		if (!holderLess)
 			checkFactory = cryptControl.release();
 	}
 
@@ -587,6 +657,20 @@ namespace Jrd {
 
 		try
 		{
+			// Create local copy of existing attachments
+			Sync dSync(&dbb.dbb_sync, FB_FUNCTION);
+			dSync.lock(SYNC_EXCLUSIVE);
+
+			AttachmentsRefHolder existing;
+			{
+				MutexLockGuard g(holdersMutex, FB_FUNCTION);
+				for (Attachment* att = dbb.dbb_attachments; att; att = att->att_next)
+					existing.add(att->getStable());
+			}
+
+			dSync.unlock();
+
+			// Disable cache I/O
 			BarSync::LockGuard writeGuard(tdbb, sync);
 
 			// header scope
@@ -649,27 +733,50 @@ namespace Jrd {
 
 				if (checkFactory)
 				{
-					// Create local copy of existing attachments
-					AttVector existing;
+					// Loop through attachments
+					for (AttachmentsRefHolder::Iterator iter(existing); *iter; ++iter)
 					{
-						SyncLockGuard dsGuard(&dbb.dbb_sync, SYNC_EXCLUSIVE, FB_FUNCTION);
-						for (Attachment* att = dbb.dbb_attachments; att; att = att->att_next)
-							existing.push(att);
+						AttachmentAnySyncHolder a(*iter);
+						if (a.hasData())
+							internalAttach(tdbb, a, true);
 					}
 
-					// Loop through attachments
-					MutexLockGuard g(holdersMutex, FB_FUNCTION);
-
-					for (unsigned n = 0; n < existing.getCount(); ++n)
-						internalAttach(tdbb, existing[n], true);
-
 					// In case of missing providers close consumers
-					if (keyProviders.getCount() == 0)
+					if (!keyProviders.hasData())
 						shutdownConsumers(tdbb);
 				}
 			}
 			else
+			{
+				for (GetPlugins<IKeyHolderPlugin> keyControl(IPluginManager::TYPE_KEY_HOLDER, dbb.dbb_config);
+				keyControl.hasData(); keyControl.next())
+				{
+					// check does keyHolder want to provide a key for us
+					IKeyHolderPlugin* keyHolder = keyControl.plugin();
+
+					FbLocalStatus st;
+					int keyCallbackRc = keyHolder->keyCallback(&st, tdbb->getAttachment()->att_crypt_callback);
+					st.check();
+					if (!keyCallbackRc)
+						continue;
+
+					// validate a key
+					AutoPlugin<IDbCryptPlugin> crypt(checkFactory->makeInstance());
+					setDbInfo(crypt);
+					crypt->setKey(&st, 1, &keyHolder, keyName.c_str());
+
+
+					string valid;
+					calcValidation(valid, crypt);
+					if (hc.find(Ods::HDR_crypt_hash))
+					{
+						hc.getString(hash);
+						if (hash != valid)
+							(Arg::Gds(isc_bad_crypt_key) << keyName).raise();
+					}
+				}
 				header->hdr_flags &= ~Ods::hdr_encrypted;
+			}
 
 			hdr.setClumplets(hc);
 
@@ -712,8 +819,12 @@ namespace Jrd {
 	{
 		MutexLockGuard g(holdersMutex, FB_FUNCTION);
 
-		for (unsigned i = 0; i < keyConsumers.getCount(); ++i)
-			keyConsumers[i]->signalShutdown();
+		for (AttachmentsRefHolder::Iterator iter(keyConsumers); *iter; ++iter)
+		{
+			AttachmentAnySyncHolder a(*iter);
+			if (a.hasData())
+				a->signalShutdown();
+		}
 
 		keyConsumers.clear();
 	}
@@ -771,11 +882,12 @@ namespace Jrd {
 		}
 
 		// Apply results
+		MutexLockGuard g(holdersMutex, FB_FUNCTION);
 
 		if (fProvide)
-			keyProviders.push(att);
+			keyProviders.add(att->getStable());
 		else if (consume && !fLoad)
-			keyConsumers.push(att);
+			keyConsumers.add(att->getStable());
 
 		return fLoad;
 	}
@@ -784,14 +896,13 @@ namespace Jrd {
 	{
 		if (checkFactory)
 		{
-			MutexLockGuard g(holdersMutex, FB_FUNCTION);
-
 			if (!internalAttach(tdbb, att, false))
 			{
-				if (keyProviders.getCount() == 0)
-					(Arg::Gds(isc_random) << "Missing correct crypt key").raise();
+				MutexLockGuard g(holdersMutex, FB_FUNCTION);
 
-				keyConsumers.push(att);
+				if (!keyProviders.hasData())
+					(Arg::Gds(isc_random) << "Missing correct crypt key").raise();
+				keyConsumers.add(att->getStable());
 			}
 		}
 
@@ -804,21 +915,25 @@ namespace Jrd {
 			return;
 
 		MutexLockGuard g(holdersMutex, FB_FUNCTION);
-		for (unsigned n = 0; n < keyConsumers.getCount(); ++n)
+		for (AttachmentsRefHolder::Iterator iter(keyConsumers); *iter; ++iter)
 		{
-			if (keyConsumers[n] == att)
+			StableAttachmentPart* const sAtt = *iter;
+
+			if (sAtt->getHandle() == att)
 			{
-				keyConsumers.remove(n);
+				iter.remove();
 				return;
 			}
 		}
 
-		for (unsigned n = 0; n < keyProviders.getCount(); ++n)
+		for (AttachmentsRefHolder::Iterator iter(keyProviders); *iter; ++iter)
 		{
-			if (keyProviders[n] == att)
+			StableAttachmentPart* const sAtt = *iter;
+
+			if (sAtt->getHandle() == att)
 			{
-				keyProviders.remove(n);
-				if (keyProviders.getCount() == 0)
+				iter.remove();
+				if (!keyProviders.hasData())
 					shutdownConsumers(tdbb);
 				return;
 			}
@@ -858,7 +973,7 @@ namespace Jrd {
 		if (!LCK_lock(tdbb, threadLock, LCK_EX, LCK_NO_WAIT))
 		{
 			// Cleanup lock manager error
-			fb_utils::init_status(tdbb->tdbb_status_vector);
+			tdbb->tdbb_status_vector->init();
 
 			return;
 		}
@@ -923,34 +1038,13 @@ namespace Jrd {
 				return;
 			}
 
-			// Establish temp context
-			// Needed to take crypt thread lock
-			UserId user;
-			user.usr_user_name = "Database Crypter";
-
-			Jrd::Attachment* const attachment = Jrd::Attachment::create(&dbb, NULL);
-			RefPtr<SysStableAttachment> sAtt(FB_NEW SysStableAttachment(attachment));
-			attachment->setStable(sAtt);
-			attachment->att_filename = dbb.dbb_filename;
-			attachment->att_user = &user;
-
-			BackgroundContextHolder tempDbb(&dbb, attachment, &status_vector, FB_FUNCTION);
-
-			LCK_init(tempDbb, LCK_OWNER_attachment);
-			PAG_header(tempDbb, true);
-			PAG_attachment_id(tempDbb);
-
-			sAtt->initDone();
+			// Establish temp context needed to take crypt thread lock
+			ThreadContextHolder tempDbb(&dbb, NULL, &status_vector);
 
 			// Take exclusive threadLock
 			// If can't take that lock - nothing to do, cryptThread already runs somewhere
 			if (!LCK_lock(tempDbb, threadLock, LCK_EX, LCK_NO_WAIT))
-			{
-				Monitoring::cleanupAttachment(tempDbb);
-				attachment->releaseLocks(tempDbb);
-				LCK_fini(tempDbb, LCK_OWNER_attachment);
 				return;
-			}
 
 			try
 			{
@@ -976,7 +1070,7 @@ namespace Jrd {
 						dbb.dbb_database_name.c_str(), writer.getBufferLength(), writer.getBuffer()));
 					check(&status_vector);
 
-					MutexLockGuard attGuard(*(jAtt->getStable()->getMutex()), FB_FUNCTION);
+					AttSyncLockGuard attGuard(*(jAtt->getStable()->getSync()), FB_FUNCTION);
 					Attachment* att = jAtt->getHandle();
 					if (!att)
 						Arg::Gds(isc_att_shutdown).raise();
@@ -1077,9 +1171,6 @@ namespace Jrd {
 				// Release exclusive lock on StartCryptThread
 				lckRelease = true;
 				LCK_release(tempDbb, threadLock);
-				Monitoring::cleanupAttachment(tempDbb);
-				attachment->releaseLocks(tempDbb);
-				LCK_fini(tempDbb, LCK_OWNER_attachment);
 			}
 			catch (const Exception&)
 			{
@@ -1089,9 +1180,6 @@ namespace Jrd {
 					{
 						// Release exclusive lock on StartCryptThread
 						LCK_release(tempDbb, threadLock);
-						Monitoring::cleanupAttachment(tempDbb);
-						attachment->releaseLocks(tempDbb);
-						LCK_fini(tempDbb, LCK_OWNER_attachment);
 					}
 				}
 				catch (const Exception&)
@@ -1326,9 +1414,16 @@ namespace Jrd {
 		return 0;
 	}
 
-	ULONG CryptoManager::getCurrentPage() const
+	ULONG CryptoManager::getCurrentPage(thread_db* tdbb) const
 	{
-		return process ? currentPage : 0;
+		if (!process)
+			return 0;
+
+		if (currentPage)
+			return currentPage;
+
+		CchHdr hdr(tdbb, LCK_read);
+		return hdr->hdr_crypt_page;
 	}
 
 	ULONG CryptoManager::getLastPage(thread_db* tdbb)
@@ -1336,9 +1431,19 @@ namespace Jrd {
 		return PAG_last_page(tdbb) + 1;
 	}
 
-    UCHAR CryptoManager::getCurrentState() const
+    UCHAR CryptoManager::getCurrentState(thread_db* tdbb) const
 	{
-		return (crypt ? fb_info_crypt_encrypted : 0) | (process ? fb_info_crypt_process : 0);
+		bool p = process;
+		bool c = crypt;
+		if (!currentPage)
+		{
+			CchHdr hdr(tdbb, LCK_read);
+
+			p = hdr->hdr_flags & Ods::hdr_crypt_process;
+			c = hdr->hdr_flags & Ods::hdr_encrypted;
+		}
+
+		return (c ? fb_info_crypt_encrypted : 0) | (p ? fb_info_crypt_process : 0);
 	}
 
 	const char* CryptoManager::getKeyName() const

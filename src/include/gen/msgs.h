@@ -544,8 +544,8 @@ static const struct {
 	{335544840, "cannot update"},		/* no_update */
 	{335544841, "Cursor is already open"},		/* cursor_already_open */
 	{335544842, "@1"},		/* stack_trace */
-	{335544843, "Context variable @1 is not found in namespace @2"},		/* ctx_var_not_found */
-	{335544844, "Invalid namespace name @1 passed to @2"},		/* ctx_namespace_invalid */
+	{335544843, "Context variable '@1' is not found in namespace '@2'"},		/* ctx_var_not_found */
+	{335544844, "Invalid namespace name '@1' passed to @2"},		/* ctx_namespace_invalid */
 	{335544845, "Too many context variables"},		/* ctx_too_big */
 	{335544846, "Invalid argument passed to @1"},		/* ctx_bad_argument */
 	{335544847, "BLR syntax error. Identifier @1... is too long"},		/* identifier_too_long */
@@ -688,7 +688,7 @@ Data source : @4"},		/* eds_statement */
 	{335544981, "Floating point overflow in built-in function @1"},		/* sysf_fp_overflow */
 	{335544982, "Floating point overflow in result from UDF @1"},		/* udf_fp_overflow */
 	{335544983, "Invalid floating point value returned by UDF @1"},		/* udf_fp_nan */
-	{335544984, "Database is probably already opened by another engine instance in another Windows session"},		/* instance_conflict */
+	{335544984, "Shared memory area is probably already created by another engine instance in another Windows session"},		/* instance_conflict */
 	{335544985, "No free space found in temporary directories"},		/* out_of_temp_space */
 	{335544986, "Explicit transaction control is not allowed"},		/* eds_expl_tran_ctrl */
 	{335544987, "Use of TRUSTED switches in spb_command_line is prohibited"},		/* no_trusted_spb */

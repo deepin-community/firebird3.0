@@ -4,7 +4,7 @@ Forwarded: https://sourceforge.net/p/firebird/mailman/message/34934257/
 
 --- a/src/common/isc_sync.cpp
 +++ b/src/common/isc_sync.cpp
-@@ -950,7 +950,7 @@ ULONG ISC_exception_post(ULONG sig_num,
+@@ -965,7 +965,7 @@ ULONG ISC_exception_post(ULONG sig_num,
  	case SIGILL:
  
  		sprintf(log_msg, "%s Illegal Instruction.\n"
@@ -79,7 +79,7 @@ Forwarded: https://sourceforge.net/p/firebird/mailman/message/34934257/
  ('Cannot delete rows from external files.', NULL, NULL, 0, 466, '#', NULL, NULL, 'truser', '1000-01-01 00:00:00')
 --- a/src/jrd/CryptoManager.cpp
 +++ b/src/jrd/CryptoManager.cpp
-@@ -1148,7 +1148,7 @@ namespace Jrd {
+@@ -1236,7 +1236,7 @@ namespace Jrd {
  			}
  
  			// Slow IO - we need exclusive lock on crypto manager.
@@ -90,7 +90,7 @@ Forwarded: https://sourceforge.net/p/firebird/mailman/message/34934257/
  			for (SINT64 previous = slowIO; ; previous = slowIO)
 --- a/src/remote/client/interface.cpp
 +++ b/src/remote/client/interface.cpp
-@@ -1662,7 +1662,7 @@ void Attachment::freeClientData(CheckSta
+@@ -1695,7 +1695,7 @@ void Attachment::freeClientData(CheckSta
  
  		if (status->getState() & Firebird::IStatus::STATE_ERRORS)
  		{

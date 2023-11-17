@@ -137,7 +137,6 @@ namespace {
 	typedef Array<Service*> AllServices;
 	GlobalPtr<AllServices> allServices;	// protected by globalServicesMutex
 	volatile bool svcShutdown = false;
-
 	GlobalPtr<ThreadCollect> threadCollect;
 
 	void spbVersionError()

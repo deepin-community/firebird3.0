@@ -18,7 +18,7 @@ Author: Damyan Ivanov
  #if defined AIX || defined AIX_PPC || defined __sun
 --- a/src/common/common.h
 +++ b/src/common/common.h
-@@ -537,14 +537,6 @@ extern "C" int remove(const char* path);
+@@ -541,14 +541,6 @@ extern "C" int remove(const char* path);
  #define API_ROUTINE_VARARG      __cdecl
  #define CLIB_ROUTINE    __cdecl
  
@@ -33,7 +33,7 @@ Author: Damyan Ivanov
  #define ERRNO		GetLastError()
  #define INET_ERRNO	WSAGetLastError()
  #define H_ERRNO		WSAGetLastError()
-@@ -557,6 +549,15 @@ extern "C" int remove(const char* path);
+@@ -561,6 +553,15 @@ extern "C" int remove(const char* path);
  #endif /* WIN_NT */
  
  

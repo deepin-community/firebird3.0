@@ -101,7 +101,7 @@ namespace Firebird
 		}
 	};
 
-	template <typename Mtx, typename RefCounted = DefaultRefCounted<Mtx> >
+	template <typename Mtx, template <typename T> class RefCounted = DefaultRefCounted >
 	class EnsureUnlock
 	{
 	public:
@@ -114,14 +114,14 @@ namespace Firebird
 #define FB_LOCKED_FROM NULL
 #endif
 		{
-			RefCounted::addRef(m_mutex);
+			RefCounted<Mtx>::addRef(m_mutex);
 		}
 
 		~EnsureUnlock()
 		{
 			while (m_locked)
 				leave();
-			RefCounted::release(m_mutex);
+			RefCounted<Mtx>::release(m_mutex);
 		}
 
 		void enter()
@@ -155,8 +155,58 @@ namespace Firebird
 	};
 #undef FB_LOCKED_FROM
 
-	typedef EnsureUnlock<Mutex, NotRefCounted<Mutex> > MutexEnsureUnlock;
+	typedef EnsureUnlock<Mutex, NotRefCounted> MutexEnsureUnlock;
 	typedef EnsureUnlock<RefMutex> RefMutexEnsureUnlock;
+
+
+	// Holds mutex lock and reference to data structure, containing that mutex.
+	// Lock is never taken in ctor, explicit call 'lock()' is needed later.
+
+	class LateRefGuard
+	{
+	public:
+		LateRefGuard(const char* aReason)
+			: m_lock(NULL), m_ref(NULL), m_from(aReason)
+		{ }
+
+		void lock(Mutex* aLock, RefCounted* aRef)
+		{
+			fb_assert(aLock);
+			fb_assert(!m_lock);
+			m_lock = aLock;
+			fb_assert(aRef);
+			fb_assert(!m_ref);
+			m_ref = aRef;
+
+			m_lock->enter(m_from);
+			m_ref->assertNonZero();
+			m_ref->addRef();
+		}
+
+		~LateRefGuard()
+		{
+			try
+			{
+				if (m_lock)
+					m_lock->leave();
+				if (m_ref)
+					m_ref->release();
+			}
+			catch (const Exception&)
+			{
+				DtorException::devHalt();
+			}
+		}
+
+	private:
+		// Forbid copying
+		LateRefGuard(const LateRefGuard&);
+		LateRefGuard& operator=(const LateRefGuard&);
+
+		Mutex* m_lock;
+		RefCounted* m_ref;
+		const char* m_from;
+	};
 
 } // namespace
 

@@ -233,14 +233,18 @@ void SHUT_database(thread_db* tdbb, SSHORT flag, SSHORT delay, Sync* guard)
 	bool exclusive = notify_shutdown(tdbb, flag, delay, guard);
 	bool successful = exclusive;
 
-	// Try to get exclusive database lock periodically up to specified delay. If we
-	// haven't gotten it report shutdown error for weaker forms. For forced shutdown
-	// keep notifying until successful.
-
 	SSHORT timeout = delay ? delay - 1 : 0;
 
-	if (!exclusive)
+	if (exclusive)
 	{
+		// Ensure we have the proper DBB_shutdown_* flags in place
+		shutdown(tdbb, flag, false);
+	}
+	else
+	{
+		// Try to get exclusive database lock periodically up to specified delay. If we
+		// haven't gotten it report shutdown error for weaker forms. For forced shutdown
+		// keep notifying until successful.
 		do
 		{
 			if (!(dbb->dbb_ast_flags & (DBB_shut_attach | DBB_shut_tran | DBB_shut_force)))
@@ -469,7 +473,6 @@ static bool notify_shutdown(thread_db* tdbb, SSHORT flag, SSHORT delay, Sync* gu
  *
  **************************************/
 	Database* const dbb = tdbb->getDatabase();
-	StableAttachmentPart* const sAtt = tdbb->getAttachment()->getStable();
 
 	shutdown_data data;
 	data.data_items.flag = flag;
@@ -479,7 +482,7 @@ static bool notify_shutdown(thread_db* tdbb, SSHORT flag, SSHORT delay, Sync* gu
 
 	{ // scope
 		// Checkout before calling AST function
-		MutexUnlockGuard uguard(*(sAtt->getMutex()), FB_FUNCTION);
+		EngineCheckout uguard(tdbb, FB_FUNCTION);
 
 		// Notify local attachments
 		SHUT_blocking_ast(tdbb, true);

@@ -3712,6 +3712,7 @@ const StmtNode* InAutonomousTransactionNode::execute(thread_db* tdbb, jrd_req* r
 											   org_transaction->tra_lock_timeout,
 											   org_transaction);
 
+		request->pushTransaction(org_transaction);
 		TRA_attach_request(transaction, request);
 		tdbb->setTransaction(transaction);
 
@@ -3722,12 +3723,13 @@ const StmtNode* InAutonomousTransactionNode::execute(thread_db* tdbb, jrd_req* r
 		}
 		catch (Exception&)
 		{
+			TRA_detach_request(request);
+			request->popTransaction();
 			TRA_attach_request(org_transaction, request);
 			tdbb->setTransaction(org_transaction);
 			throw;
 		}
 
-		request->req_auto_trans.push(org_transaction);
 		impure->traNumber = transaction->tra_number;
 
 		VIO_start_save_point(tdbb, transaction);
@@ -3841,8 +3843,11 @@ const StmtNode* InAutonomousTransactionNode::execute(thread_db* tdbb, jrd_req* r
 	}
 
 	impure->traNumber = impure->savNumber = 0;
-	transaction = request->req_auto_trans.pop();
 
+	// Normally request is detached by commit/rollback, but they may fail.
+	// It should be done before request->popTransaction().
+	TRA_detach_request(request);
+	transaction = request->popTransaction();
 	TRA_attach_request(transaction, request);
 	tdbb->setTransaction(transaction);
 
@@ -6532,7 +6537,11 @@ StmtNode* StoreNode::internalDsqlPass(DsqlCompilerScratch* dsqlScratch, bool upd
 	else
 	{
 		values = doDsqlPass(dsqlScratch, dsqlValues, false);
-		needSavePoint = SubSelectFinder::find(dsqlScratch->getPool(), values);
+		// If this INSERT belongs to some PSQL code block and has subqueries
+		// inside its VALUES part, signal the caller to create a savepoint frame.
+		// See bug #5613 (aka CORE-5337) for details.
+		needSavePoint = (dsqlScratch->flags & DsqlCompilerScratch::FLAG_BLOCK) &&
+			SubSelectFinder::find(dsqlScratch->getPool(), values);
 	}
 
 	// Process relation
@@ -8032,6 +8041,7 @@ void SetRoleNode::execute(thread_db* tdbb, dsql_req* request, jrd_tra** transact
 		user->usr_sql_role_name = roleName.c_str();
 	}
 
+	user->usr_flags |= USR_newrole;
 	if (SCL_admin_role(tdbb, user->usr_sql_role_name.c_str()))
 		user->usr_flags |= USR_dba;
 	else
