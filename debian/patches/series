@@ -21,3 +21,4 @@ deb/gen-ids.patch
 deb/cve-2017-11509.patch
 out/hppa-mod_loader.patch
 out/hurd-maxpathlen.patch
+0001-deepin-sw_64-support.diff

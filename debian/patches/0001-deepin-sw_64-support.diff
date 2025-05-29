@@ -1,0 +1,50 @@
+Index: firebird3.0/configure.ac
+===================================================================
+--- firebird3.0.orig/configure.ac
++++ firebird3.0/configure.ac
+@@ -404,6 +404,17 @@ dnl CPU_TYPE=ppc64
+    SHRLIB_EXT=so
+    ;;
+ 
++  sw_64*-*-linux*)
++   MAKEFILE_PREFIX=linux_generic
++   INSTALL_PREFIX=linux
++   PLATFORM=LINUX
++   AC_DEFINE(LINUX, 1, [Define this if OS is Linux])
++   AC_DEFINE(SW64, 1, [Define this if CPU is SW64])
++   LOCK_MANAGER_FLG=Y
++   EDITLINE_FLG=Y
++   SHRLIB_EXT=so
++   ;;
++
+   *-*-linux* | *-*-gnu*)
+     MAKEFILE_PREFIX=linux_generic
+     INSTALL_PREFIX=linux
+Index: firebird3.0/src/common/classes/DbImplementation.cpp
+===================================================================
+--- firebird3.0.orig/src/common/classes/DbImplementation.cpp
++++ firebird3.0/src/common/classes/DbImplementation.cpp
+@@ -50,6 +50,7 @@ static const UCHAR CpuArm64 = 15;
+ static const UCHAR CpuPowerPc64el = 16;
+ static const UCHAR CpuM68k = 17;
+ static const UCHAR CpuRiscV64 = 18;
++static const UCHAR CpuSw64 = 19;
+ static const UCHAR CpuMips64el = 19;
+ static const UCHAR CpuLoongArch = 20;
+ 
+Index: firebird3.0/src/common/common.h
+===================================================================
+--- firebird3.0.orig/src/common/common.h
++++ firebird3.0/src/common/common.h
+@@ -207,6 +207,11 @@
+ #define FB_CPU CpuM68k
+ #endif /* M68K */
+ 
++#ifdef SW64
++#define FB_CPU CpuSw64
++#define RISC_ALIGNMENT
++#endif
++
+ #endif /* LINUX */
+ 
+ 
