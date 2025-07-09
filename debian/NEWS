@@ -1,0 +1,12 @@
+firebird3.0 (3.0.12.ds7-5+exp.0) experimental; urgency=medium
+
+  firebird3.0-server is now co-installable with firebird4.0-server.
+
+  Services are configured to listen on different TCP ports. The first one
+  installed takes port 3050 (the default), the second 3051 and so on.
+
+  Previously all server packages conflicted with each other.
+  Now it is possible to have more than one version installed and running,
+  helping the migration of databases.
+
+ -- Damyan Ivanov <dmn@debian.org>  Mon, 13 Jan 2025 14:53:17 +0000

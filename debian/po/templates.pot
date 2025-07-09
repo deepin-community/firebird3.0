@@ -1,6 +1,6 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
+# This file is distributed under the same license as the firebird3.0 package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: firebird3.0\n"
 "Report-Msgid-Bugs-To: firebird3.0@packages.debian.org\n"
-"POT-Creation-Date: 2015-05-11 10:00+0300\n"
+"POT-Creation-Date: 2024-12-29 08:30+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -62,23 +62,8 @@ msgstr ""
 msgid "To keep your existing password, leave this blank."
 msgstr ""
 
-#. Type: error
-#. Description
-#: ../firebird3.0-server.templates:4001
-msgid "firebird${FB_VER}-${FB_FLAVOUR} server is in use"
-msgstr ""
-
-#. Type: error
-#. Description
-#: ../firebird3.0-server.templates:4001
-msgid ""
-" To ensure data integrity, package removal/upgrade is aborted. Please stop "
-"all local and remote clients before removing or upgrading firebird${FB_VER}-"
-"${FB_FLAVOUR}"
-msgstr ""
-
 #. Type: title
 #. Description
-#: ../firebird3.0-server.templates:5001
+#: ../firebird3.0-server.templates:4001
 msgid "Password for firebird ${FB_VER}"
 msgstr ""

@@ -1,0 +1,25 @@
+commit 37c1bcadbaf37425bee70a8fd1552eb069628991
+Author: AlexPeshkoff <alexander.peshkoff@gmail.com>
+Date:   Wed Jan 15 12:50:27 2025 +0300
+Bug: https://github.com/FirebirdSQL/firebird/issues/8395
+Bug-Debian: https://bugs.debian.org/1092319
+
+    Fixed build - ICU is using now c++17 features in c++API
+    
+    (cherry picked from commit a81d4e4fb0b170ff4b7d142fa54eebeb7d94016a)
+
+diff --git a/builds/posix/make.defaults b/builds/posix/make.defaults
+index 5e4f598c03..94d903ddca 100755
+--- a/builds/posix/make.defaults
++++ b/builds/posix/make.defaults
+@@ -101,8 +101,8 @@ GLOB_OPTIONS:=
+ 
+ #____________________________________________________________________________
+ 
+-# Firebird needs no RTTI
+-RTTI_FLAG:= -fno-rtti
++# Firebird needs no RTTI, make it build with icu-75.1
++RTTI_FLAG:= -fno-rtti -DU_SHOW_CPLUSPLUS_API=0 -DU_SHOW_CPLUSPLUS_HEADER_API=0
+ 
+ # If this is defined then we use special rules useful for developers only
+ IsDeveloper = @DEVEL_FLG@

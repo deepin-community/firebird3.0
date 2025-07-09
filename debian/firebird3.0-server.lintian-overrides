@@ -1,6 +1,4 @@
 # These templates are used, but via shell variables and therefore lintian can't
 # detect the usage
-firebird3.0-server: unused-debconf-template shared/firebird/sysdba_password/first_install [templates:1]
-firebird3.0-server: unused-debconf-template shared/firebird/sysdba_password/upgrade_reconfigure [templates:178]
-firebird3.0-server: unused-debconf-template shared/firebird/server_in_use [templates:360]
-
+firebird3.0-server: unused-debconf-template shared/firebird/sysdba_password/first_install [templates:*]
+firebird3.0-server: unused-debconf-template shared/firebird/sysdba_password/upgrade_reconfigure [templates:*]

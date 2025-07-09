@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: firebird2.0 2.0.3.12981.ds1-6\n"
 "Report-Msgid-Bugs-To: firebird3.0@packages.debian.org\n"
-"POT-Creation-Date: 2015-05-11 10:00+0300\n"
+"POT-Creation-Date: 2024-12-29 08:30+0200\n"
 "PO-Revision-Date: 2008-03-13 11:28+0100\n"
 "Last-Translator: Holger Wansing <linux@wansing-online.de>\n"
 "Language-Team: German <debian-l10n-german@lists.debian.org>\n"
@@ -71,30 +71,24 @@ msgstr ""
 msgid "To keep your existing password, leave this blank."
 msgstr "Um Ihr vorhandenes Passwort weiter zu verwenden, lassen Sie dies leer."
 
-#. Type: error
-#. Description
-#: ../firebird3.0-server.templates:4001
-msgid "firebird${FB_VER}-${FB_FLAVOUR} server is in use"
-msgstr "firebird${FB_VER}-${FB_FLAVOUR}-Server wird gerade genutzt"
-
-#. Type: error
-#. Description
-#: ../firebird3.0-server.templates:4001
-msgid ""
-" To ensure data integrity, package removal/upgrade is aborted. Please stop "
-"all local and remote clients before removing or upgrading firebird${FB_VER}-"
-"${FB_FLAVOUR}"
-msgstr ""
-"Um die Datenintegrität sicher zu stellen, wird die Entfernung/das Upgrade "
-"des Pakets abgebrochen. Bitte stoppen Sie alle lokalen und entfernt "
-"laufenden Clients, bevor Sie firebird${FB_VER}-${FB_FLAVOUR} entfernen oder "
-"aktualisieren."
-
 #. Type: title
 #. Description
-#: ../firebird3.0-server.templates:5001
+#: ../firebird3.0-server.templates:4001
 msgid "Password for firebird ${FB_VER}"
 msgstr "Passwort für Firebird ${FB_VER}"
+
+#~ msgid "firebird${FB_VER}-${FB_FLAVOUR} server is in use"
+#~ msgstr "firebird${FB_VER}-${FB_FLAVOUR}-Server wird gerade genutzt"
+
+#~ msgid ""
+#~ " To ensure data integrity, package removal/upgrade is aborted. Please "
+#~ "stop all local and remote clients before removing or upgrading firebird$"
+#~ "{FB_VER}-${FB_FLAVOUR}"
+#~ msgstr ""
+#~ "Um die Datenintegrität sicher zu stellen, wird die Entfernung/das Upgrade "
+#~ "des Pakets abgebrochen. Bitte stoppen Sie alle lokalen und entfernt "
+#~ "laufenden Clients, bevor Sie firebird${FB_VER}-${FB_FLAVOUR} entfernen "
+#~ "oder aktualisieren."
 
 #~ msgid "Enable Firebird server?"
 #~ msgstr "Firebird-Server aktivieren?"
@@ -114,19 +108,19 @@ msgstr "Passwort für Firebird ${FB_VER}"
 #~ msgstr "Passwort-Datenbank löschen?"
 
 #~ msgid ""
-#~ "The last package that uses password database at /var/lib/firebird/"
-#~ "${FB_VER}/system/security2.fdb is being purged."
+#~ "The last package that uses password database at /var/lib/firebird/$"
+#~ "{FB_VER}/system/security2.fdb is being purged."
 #~ msgstr ""
-#~ "Das letzte Paket, dass die Passwort-Datenbank unter /var/lib/firebird/"
-#~ "${FB_VER}/system/security2.fdb nutzt, wird gerade komplett entfernt."
+#~ "Das letzte Paket, dass die Passwort-Datenbank unter /var/lib/firebird/$"
+#~ "{FB_VER}/system/security2.fdb nutzt, wird gerade komplett entfernt."
 
 #~ msgid ""
 #~ "Leaving security database may present security risk. It is a good idea to "
 #~ "remove it if you don't plan re-installing firebird${FB_VER}."
 #~ msgstr ""
 #~ "Die Datenbank zu erhalten, könnte ein Sicherheitsrisiko darstellen. Es "
-#~ "ist eine gute Idee, sie zu entfernen, wenn Sie nicht vorhaben, firebird"
-#~ "${FB_VER} erneut zu installieren."
+#~ "ist eine gute Idee, sie zu entfernen, wenn Sie nicht vorhaben, firebird$"
+#~ "{FB_VER} erneut zu installieren."
 
 #~ msgid ""
 #~ "The same stands for /etc/firebird/${FB_VER}/SYSDBA.password, where the "
@@ -153,5 +147,5 @@ msgstr "Passwort für Firebird ${FB_VER}"
 #~ "Note that any databases outside of /var/lib/firebird/${FB_VER}/data will "
 #~ "not be affected."
 #~ msgstr ""
-#~ "Beachten Sie, dass alle Datenbanken außerhalb von /var/lib/firebird/"
-#~ "${FB_VER}/data nicht verändert werden."
+#~ "Beachten Sie, dass alle Datenbanken außerhalb von /var/lib/firebird/$"
+#~ "{FB_VER}/data nicht verändert werden."

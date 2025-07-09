@@ -79,7 +79,7 @@ Forwarded: https://sourceforge.net/p/firebird/mailman/message/34934257/
  ('Cannot delete rows from external files.', NULL, NULL, 0, 466, '#', NULL, NULL, 'truser', '1000-01-01 00:00:00')
 --- a/src/jrd/CryptoManager.cpp
 +++ b/src/jrd/CryptoManager.cpp
-@@ -1236,7 +1236,7 @@ namespace Jrd {
+@@ -1241,7 +1241,7 @@ namespace Jrd {
  			}
  
  			// Slow IO - we need exclusive lock on crypto manager.
@@ -90,7 +90,7 @@ Forwarded: https://sourceforge.net/p/firebird/mailman/message/34934257/
  			for (SINT64 previous = slowIO; ; previous = slowIO)
 --- a/src/remote/client/interface.cpp
 +++ b/src/remote/client/interface.cpp
-@@ -1695,7 +1695,7 @@ void Attachment::freeClientData(CheckSta
+@@ -1709,7 +1709,7 @@ void Attachment::freeClientData(CheckSta
  
  		if (status->getState() & Firebird::IStatus::STATE_ERRORS)
  		{
@@ -101,7 +101,7 @@ Forwarded: https://sourceforge.net/p/firebird/mailman/message/34934257/
  		}
 --- a/src/remote/protocol.h
 +++ b/src/remote/protocol.h
-@@ -365,7 +365,7 @@ const UCHAR CNCT_specific_data		= 7;	//
+@@ -371,7 +371,7 @@ const UCHAR CNCT_specific_data		= 7;	//
  const UCHAR CNCT_plugin_name		= 8;	// Name of plugin, which generated that data
  const UCHAR CNCT_login				= 9;	// Same data as isc_dpb_user_name
  const UCHAR CNCT_plugin_list		= 10;	// List of plugins, available on client

@@ -1,0 +1,24 @@
+#!/bin/sh
+# postinst script for firebird3.0-common
+
+set -e
+set -u
+
+if [ -n "${DEBIAN_FIREBIRD_DEBUG:-}" ]; then
+    set -x
+fi
+
+FB_VER=3.0
+
+
+case "$1" in
+    configure)
+        /usr/share/firebird/$FB_VER/configure-port --fb-ver $FB_VER
+    ;;
+esac
+
+#DEBHELPER#
+
+exit 0
+
+# vi: set sw=4 ts=8 filetype=sh sts=4 :

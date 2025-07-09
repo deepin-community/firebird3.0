@@ -522,8 +522,6 @@ bool CCH_exclusive_attachment(thread_db* tdbb, USHORT level, SSHORT wait_flag, S
 	{
 		try
 		{
-			tdbb->checkCancelState(true);
-
 			bool found = false;
 			for (Jrd::Attachment* other_attachment = attachment->att_next; other_attachment;
 				 other_attachment = other_attachment->att_next)
@@ -574,6 +572,7 @@ bool CCH_exclusive_attachment(thread_db* tdbb, USHORT level, SSHORT wait_flag, S
 			if (remaining >= CCH_EXCLUSIVE_RETRY_INTERVAL)
 			{
 				SyncUnlockGuard unlock(exLock ? (*exGuard) : dsGuard);
+				tdbb->reschedule(true);
 				Thread::sleep(CCH_EXCLUSIVE_RETRY_INTERVAL * 1000);
 			}
 
@@ -1179,7 +1178,7 @@ void CCH_flush(thread_db* tdbb, USHORT flush_flag, TraNumber tra_number)
 			PIO_flush(tdbb, shadow->sdw_file);
 
 		BackupManager* bm = dbb->dbb_backup_manager;
-		if (!bm->isShutDown())
+		if (bm && !bm->isShutDown())
 		{
 			BackupManager::StateReadGuard stateGuard(tdbb);
 			const int backup_state = bm->getState();
@@ -1527,6 +1526,10 @@ void CCH_init2(thread_db* tdbb)
 	Database* dbb = tdbb->getDatabase();
 	BufferControl* bcb = dbb->dbb_bcb;
 
+	// Avoid running CCH_init2() in 2 parallel threads
+	Firebird::MutexEnsureUnlock guard(bcb->bcb_threadStartup, FB_FUNCTION);
+	guard.enter();
+
 	if (!(bcb->bcb_flags & BCB_exclusive) || (bcb->bcb_flags & (BCB_cache_writer | BCB_writer_start)))
 		return;
 
@@ -1547,6 +1550,7 @@ void CCH_init2(thread_db* tdbb)
 	{
 		// writer startup in progress
 		bcb->bcb_flags |= BCB_writer_start;
+		guard.leave();
 
 		try
 		{

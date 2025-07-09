@@ -1,0 +1,25 @@
+Description: on mips64el, both MIPSEL and MIPS64EL are defined
+Author: Damyan Ivanov <dmn@debian.org>
+
+--- a/src/common/common.h
++++ b/src/common/common.h
+@@ -147,6 +147,10 @@
+ #define RISC_ALIGNMENT
+ #endif /* sparc */
+ 
++#ifdef MIPS64EL
++#define FB_CPU CpuMips64el
++#else
++
+ #ifdef MIPSEL
+ #define FB_CPU CpuMipsel
+ #endif /* mipsel */
+@@ -155,8 +159,6 @@
+ #define FB_CPU CpuMips
+ #endif /* mips */
+ 
+-#ifdef MIPS64EL
+-#define FB_CPU CpuMips64el
+ #endif /* mips64el */
+ 
+ #ifdef IA64

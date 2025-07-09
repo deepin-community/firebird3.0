@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: firebird2\n"
 "Report-Msgid-Bugs-To: firebird3.0@packages.debian.org\n"
-"POT-Creation-Date: 2015-05-11 10:00+0300\n"
+"POT-Creation-Date: 2024-12-29 08:30+0200\n"
 "PO-Revision-Date: 2008-03-15 14:26+0100\n"
 "Last-Translator: Miroslav Kure <kurem@debian.cz>\n"
 "Language-Team: Czech <debian-l10n-czech@lists.debian.org>\n"
@@ -70,29 +70,23 @@ msgstr ""
 msgid "To keep your existing password, leave this blank."
 msgstr "Pro ponechání stávajícího hesla nezadávejte nic."
 
-#. Type: error
-#. Description
-#: ../firebird3.0-server.templates:4001
-msgid "firebird${FB_VER}-${FB_FLAVOUR} server is in use"
-msgstr "Server firebird${FB_VER}-${FB_FLAVOUR} se používá"
-
-#. Type: error
-#. Description
-#: ../firebird3.0-server.templates:4001
-msgid ""
-" To ensure data integrity, package removal/upgrade is aborted. Please stop "
-"all local and remote clients before removing or upgrading firebird${FB_VER}-"
-"${FB_FLAVOUR}"
-msgstr ""
-"Pro zajištění integrity dat bude odstranění/aktualizace balíku přerušeno. "
-"Před odstraněním nebo aktualizací balíku firebird${FB_VER}-{FB_FLAVOUR} "
-"prosím zastavte všechny lokální i vzdálené klienty."
-
 #. Type: title
 #. Description
-#: ../firebird3.0-server.templates:5001
+#: ../firebird3.0-server.templates:4001
 msgid "Password for firebird ${FB_VER}"
 msgstr "Heslo pro firebird ${FB_VER}"
+
+#~ msgid "firebird${FB_VER}-${FB_FLAVOUR} server is in use"
+#~ msgstr "Server firebird${FB_VER}-${FB_FLAVOUR} se používá"
+
+#~ msgid ""
+#~ " To ensure data integrity, package removal/upgrade is aborted. Please "
+#~ "stop all local and remote clients before removing or upgrading firebird$"
+#~ "{FB_VER}-${FB_FLAVOUR}"
+#~ msgstr ""
+#~ "Pro zajištění integrity dat bude odstranění/aktualizace balíku přerušeno. "
+#~ "Před odstraněním nebo aktualizací balíku firebird${FB_VER}-{FB_FLAVOUR} "
+#~ "prosím zastavte všechny lokální i vzdálené klienty."
 
 #~ msgid "Enable Firebird server?"
 #~ msgstr "Povolit server Firebird?"
@@ -111,11 +105,11 @@ msgstr "Heslo pro firebird ${FB_VER}"
 #~ msgstr "Smazat databázi hesel?"
 
 #~ msgid ""
-#~ "The last package that uses password database at /var/lib/firebird/"
-#~ "${FB_VER}/system/security2.fdb is being purged."
+#~ "The last package that uses password database at /var/lib/firebird/$"
+#~ "{FB_VER}/system/security2.fdb is being purged."
 #~ msgstr ""
-#~ "Poslední balík, který používá databázi hesel ve /var/lib/firebird/"
-#~ "${FB_VER}/system/security2.fdb, se právě odstraňuje."
+#~ "Poslední balík, který používá databázi hesel ve /var/lib/firebird/$"
+#~ "{FB_VER}/system/security2.fdb, se právě odstraňuje."
 
 #~ msgid ""
 #~ "Leaving security database may present security risk. It is a good idea to "

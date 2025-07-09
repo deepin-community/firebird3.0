@@ -1,3 +1,210 @@
+firebird3.0 (3.0.12.ds7-13) unstable; urgency=medium
+
+  [ Carles Pina i Estany ]
+  * Added po-debconf Catalan translation
+
+ -- Damyan Ivanov <dmn@debian.org>  Sun, 23 Mar 2025 16:20:32 +0000
+
+firebird3.0 (3.0.12.ds7-12) unstable; urgency=medium
+
+  [ Gioele Barabucci ]
+  * d/control: Remove outdated debconf version constraint (Closes: #1096116)
+
+ -- Damyan Ivanov <dmn@debian.org>  Mon, 17 Feb 2025 07:56:23 +0000
+
+firebird3.0 (3.0.12.ds7-11) unstable; urgency=medium
+
+  * Revert 'remove the firebird system user when -server is purged'
+    See the discussion in #1095408 and
+    https://wiki.debian.org/AccountHandlingInMaintainerScripts
+    Reopens: #1089791
+
+ -- Damyan Ivanov <dmn@debian.org>  Sat, 08 Feb 2025 11:23:01 +0000
+
+firebird3.0 (3.0.12.ds7-10) unstable; urgency=medium
+
+  * fix init.d-style service management
+
+ -- Damyan Ivanov <dmn@debian.org>  Fri, 07 Feb 2025 15:12:46 +0000
+
+firebird3.0 (3.0.12.ds7-9) unstable; urgency=medium
+
+  * functions.sh: deduce security database name from firebird version
+  * fix shell quoting, also in generated SYSDBA.password
+  * use correct package name when recommending dpkg-reconfigure for changing
+    SYSDBA password
+  * -server.postinst: create 'firebird' user only if it doesn't exists
+  * move RemoteServicePort from firebird.conf to a separate file, managed in
+    postinst
+
+ -- Damyan Ivanov <dmn@debian.org>  Wed, 05 Feb 2025 14:58:32 +0000
+
+firebird3.0 (3.0.12.ds7-8) unstable; urgency=medium
+
+  * Upload to unstable
+
+ -- Damyan Ivanov <dmn@debian.org>  Sat, 25 Jan 2025 15:23:28 +0000
+
+firebird3.0 (3.0.12.ds7-7+exp1) experimental; urgency=medium
+
+  * upload with +exp1 in the revision
+
+ -- Damyan Ivanov <dmn@debian.org>  Thu, 16 Jan 2025 13:38:37 +0000
+
+firebird3.0 (3.0.12.ds7-7) experimental; urgency=medium
+
+  * merge with debian/unstable
+
+ -- Damyan Ivanov <dmn@debian.org>  Thu, 16 Jan 2025 13:30:01 +0000
+
+firebird3.0 (3.0.12.ds7-6) unstable; urgency=medium
+
+  * add upstream patch fixing build with ICU 76.1 (Closes: #1092319)
+
+ -- Damyan Ivanov <dmn@debian.org>  Thu, 16 Jan 2025 13:10:11 +0000
+
+firebird3.0 (3.0.12.ds7-5+exp1) experimental; urgency=medium
+
+  * remove the dot from the Debian revision
+
+ -- Damyan Ivanov <dmn@debian.org>  Wed, 15 Jan 2025 13:26:11 +0000
+
+firebird3.0 (3.0.12.ds7-5+exp.0) experimental; urgency=medium
+
+  * merge with debian/unstable
+  * add a patch from upstream fixing thread initialization
+  * update NEWS entry about co-installability
+
+ -- Damyan Ivanov <dmn@debian.org>  Wed, 15 Jan 2025 09:56:49 +0000
+
+firebird3.0 (3.0.12.ds7-5) unstable; urgency=medium
+
+  * bump -march argument from i486 to i686 (Closes: #1092320)
+  * cherry-pick upstream commit adding missing int return types to autoconf
+    main()
+  * refresh cross-configure.patch
+  * adjust line offsets
+
+ -- Damyan Ivanov <dmn@debian.org>  Wed, 15 Jan 2025 08:48:31 +0000
+
+firebird3.0 (3.0.12.ds7-4) unstable; urgency=medium
+
+  * patch in mipsel vs. mips64el detection
+  * add mips64el to -std=gnu++03 patching
+    fixes FTBFS on mips64el with:
+      ISO C++17 does not allow dynamic exception specifications
+
+ -- Damyan Ivanov <dmn@debian.org>  Tue, 07 Jan 2025 18:43:52 +0000
+
+firebird3.0 (3.0.12.ds7-3) unstable; urgency=medium
+
+  * properly import mips64el and loongarch support from upstream
+  * refresh patch offsets
+
+ -- Damyan Ivanov <dmn@debian.org>  Tue, 07 Jan 2025 13:47:02 +0000
+
+firebird3.0 (3.0.12.ds7-2) unstable; urgency=medium
+
+  * drop out/sequential-databases-make.patch
+  * add patch from upstream fixing thread initialization
+  * update patch offsets
+
+ -- Damyan Ivanov <dmn@debian.org>  Tue, 07 Jan 2025 12:27:26 +0000
+
+firebird3.0 (3.0.12.ds7-1) unstable; urgency=medium
+
+  * use increasing upstream version number by switching back to official
+    releases, but removing the fourth version component
+    No actual upstream chanes
+
+ -- Damyan Ivanov <dmn@debian.org>  Mon, 30 Dec 2024 21:09:07 +0000
+
+firebird3.0 (3.0.12.33787.ds6-1) unstable; urgency=medium
+
+  * -server.postrm: fall back to userdel if deluser is not available
+    fixes PIUPARTS failure
+  * bump repack suffix after merging of exclusion lists
+  * switch back to official releases (four-parts version numbers)
+
+ -- Damyan Ivanov <dmn@debian.org>  Mon, 30 Dec 2024 14:08:35 +0000
+
+firebird3.0 (3.0.12.ds5-2) unstable; urgency=medium
+
+  * patch Malkefile.in to build system databases in sequence
+
+ -- Damyan Ivanov <dmn@debian.org>  Sun, 29 Dec 2024 20:08:18 +0000
+
+firebird3.0 (3.0.12.ds5-1) unstable; urgency=medium
+
+  * remove the firebird system user when -server is purged (Closes: #1089791)
+  * add github API downloads to debian/watch
+  * add gbp.conf with branch configuration
+  * exclude more files during repackaging (sourceless + .gitignore)
+  * New upstream version 3.0.12.ds5
+  * update d/copyright for version 3.0.12
+  * refresh patches
+  * install systemd configs under /usr/lib instead of /lib
+  * replace pkg-config build dependency with pkgconf
+  * drop obsolete lsb-base dependency
+  * update libib-util lintian overrides
+  * drop unused debconf template shared/firebird/server_in_use
+  * update debconf template translations
+  * update more lintian overrides
+  * declare conformance with Policy 4.7.0
+
+ -- Damyan Ivanov <dmn@debian.org>  Sun, 29 Dec 2024 10:36:56 +0000
+
+firebird3.0 (3.0.11.33703.ds4-4) unstable; urgency=medium
+
+  * replace hardcoded systemd paths with pkgconf queries
+    + replace pkg-config with pkgconf in Build-Depends
+    + add systemd-dev to Build-Depends
+    + Closes: #1073615
+
+ -- Damyan Ivanov <dmn@debian.org>  Tue, 25 Jun 2024 10:17:13 +0000
+
+firebird3.0 (3.0.11.33703.ds4-3+exp.1) experimental; urgency=medium
+
+  * point Vcs-* fields to debian/experimental branch
+  * debian-branch=debian/experimental in gbp.conf
+
+ -- Damyan Ivanov <dmn@debian.org>  Sat, 27 Apr 2024 05:59:34 +0000
+
+firebird3.0 (3.0.11.33703.ds4-3+exp.0) experimental; urgency=medium
+
+  * Rebuild of merged 3.0.11.33703.ds4 for experimental
+
+ -- Damyan Ivanov <dmn@debian.org>  Fri, 05 Apr 2024 07:51:11 +0000
+
+firebird3.0 (3.0.11.33703.ds4-3) unstable; urgency=medium
+
+  * honour CXXFLAGS on arm64 (Closes: #1064907)
+
+ -- Damyan Ivanov <dmn@debian.org>  Tue, 05 Mar 2024 14:04:53 +0000
+
+firebird3.0 (3.0.11.33703.ds4-2+0.local.0) experimental; urgency=medium
+
+  * backport support for multiple servers on different ports from 4.0
+    packaging
+  * drop conflints/provides firebird-server, drop conflict with ancient 2.5
+    versions
+  * add NEWS.debian about co-installability of server packages
+  * allow firebird4.0-utils as an alternative to firebird3.0-utils
+  * prepare for co-installability with firebird4.0
+    all binaries are under /usr/lib/firebird/3.0, depend on firebird-utils
+    (from 4.0) for the client utility wrappers in /usr/bin
+  * do not require a running firebird service when setting SYSDBA password
+  * drop syslog.target dependency from the .service file
+  * explicit path to security database and explicit list of providers
+  * do not stop service before creating security database
+  * drop dh_installsystemd override as not necessary
+  * bump debhelper compatibility level to 13
+  * out/obsolete-syslogd.target: also remove StandardError=syslog
+  * add Documentation= key to firebird service file
+  * drop packages to be built by firebird4.0, build-depend on firebird-dev
+
+ -- Damyan Ivanov <dmn@debian.org>  Sat, 14 Oct 2023 18:23:30 +0000
+
 firebird3.0 (3.0.11.33703.ds4-2) unstable; urgency=medium
 
   * Bump policy-compliance version to 4.6.2 (no changes needed)

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: firebird2.0\n"
 "Report-Msgid-Bugs-To: firebird3.0@packages.debian.org\n"
-"POT-Creation-Date: 2015-05-11 10:00+0300\n"
+"POT-Creation-Date: 2024-12-29 08:30+0200\n"
 "PO-Revision-Date: 2007-05-27 02:53-0500\n"
 "Last-Translator: vimal <vimal_ravi@rediffmail.com>,Mobin|മോബിന്‍ M|എം "
 "<mobinmohan@gmail.com>\n"
@@ -64,8 +64,8 @@ msgid ""
 "If you don't enter a password, a random one will be used (and stored in "
 "SYSDBA.password)."
 msgstr ""
-"നിങ്ങള്‍ ഒരു അടയാളവാക്ക് നല്‍കിയിട്ടില്ലെങ്കില്‍, ഏതെങ്കിലുമൊന്ന് ഉപയോഗിക്കപ്പെടും (അത്  സിസ്ഡിബിഎ."
-"പാസ്‌വേര്‍ഡി (SYSDBA.password) ല്‍ ശേഖരിയ്ക്കും)."
+"നിങ്ങള്‍ ഒരു അടയാളവാക്ക് നല്‍കിയിട്ടില്ലെങ്കില്‍, ഏതെങ്കിലുമൊന്ന് ഉപയോഗിക്കപ്പെടും (അത്  "
+"സിസ്ഡിബിഎ.പാസ്‌വേര്‍ഡി (SYSDBA.password) ല്‍ ശേഖരിയ്ക്കും)."
 
 #. Type: password
 #. Description
@@ -73,31 +73,25 @@ msgstr ""
 msgid "To keep your existing password, leave this blank."
 msgstr "ഇപ്പോഴുളള അടയാളവാക്ക് നിലനിിര്‍ത്തുന്നതിന്, ഈ കളം വെറുതെ ഇടുക."
 
-#. Type: error
-#. Description
-#: ../firebird3.0-server.templates:4001
-msgid "firebird${FB_VER}-${FB_FLAVOUR} server is in use"
-msgstr "ഫയര്‍ബേര്‍ഡ് ${FB_VER}-${FB_FLAVOUR} സെര്‍വര്‍ ഉപയോഗത്തിലാണ്"
-
-#. Type: error
-#. Description
-#: ../firebird3.0-server.templates:4001
-msgid ""
-" To ensure data integrity, package removal/upgrade is aborted. Please stop "
-"all local and remote clients before removing or upgrading firebird${FB_VER}-"
-"${FB_FLAVOUR}"
-msgstr ""
-"ഡാറ്റയ്ക്ക് മാറ്റം വന്നിട്ടില്ലെന്ന്  ഉറപ്പുവരുത്തുന്നതിനായി പാക്കേജിന്റെ നീക്കംചെയ്യലില്‍/"
-"പുതുക്കലില്‍  നിന്നും പിന്തിരിയുക. ഫയര്‍ബേര്‍ഡ് ${FB_VER}-${FB_FLAVOUR} നീക്കുന്നതിനോ "
-"പുതുക്കുന്നതിനോ മുന്‍പ്  ദയവായി എല്ലാ പ്രാദേശികവും വിദൂരവുമായ ക്ലയന്റ്സിനേയും നിര്‍ത്തുക."
-
 #. Type: title
 #. Description
-#: ../firebird3.0-server.templates:5001
+#: ../firebird3.0-server.templates:4001
 #, fuzzy
 #| msgid "Password for ${PACKAGE}"
 msgid "Password for firebird ${FB_VER}"
 msgstr "${PACKAGE}നുളള അടയാളവാക്ക് :"
+
+#~ msgid "firebird${FB_VER}-${FB_FLAVOUR} server is in use"
+#~ msgstr "ഫയര്‍ബേര്‍ഡ് ${FB_VER}-${FB_FLAVOUR} സെര്‍വര്‍ ഉപയോഗത്തിലാണ്"
+
+#~ msgid ""
+#~ " To ensure data integrity, package removal/upgrade is aborted. Please "
+#~ "stop all local and remote clients before removing or upgrading firebird$"
+#~ "{FB_VER}-${FB_FLAVOUR}"
+#~ msgstr ""
+#~ "ഡാറ്റയ്ക്ക് മാറ്റം വന്നിട്ടില്ലെന്ന്  ഉറപ്പുവരുത്തുന്നതിനായി പാക്കേജിന്റെ നീക്കംചെയ്യലില്‍/"
+#~ "പുതുക്കലില്‍  നിന്നും പിന്തിരിയുക. ഫയര്‍ബേര്‍ഡ് ${FB_VER}-${FB_FLAVOUR} നീക്കുന്നതിനോ "
+#~ "പുതുക്കുന്നതിനോ മുന്‍പ്  ദയവായി എല്ലാ പ്രാദേശികവും വിദൂരവുമായ ക്ലയന്റ്സിനേയും നിര്‍ത്തുക."
 
 #, fuzzy
 #~| msgid "Enabled firebird version:"
@@ -108,8 +102,8 @@ msgstr "${PACKAGE}നുളള അടയാളവാക്ക് :"
 #~ msgstr "അടയാളവാക്കിന്റെ ഡാറ്റാബേസ്  നീക്കം ചെയ്യണോ?"
 
 #~ msgid ""
-#~ "The last package that uses password database at /var/lib/firebird/"
-#~ "${FB_VER}/system/security2.fdb is being purged."
+#~ "The last package that uses password database at /var/lib/firebird/$"
+#~ "{FB_VER}/system/security2.fdb is being purged."
 #~ msgstr ""
 #~ " /var/lib/firebird/${FB_VER}/system/security2.fdb ല്‍  അടയാളവാക്കിന്റെ "
 #~ "ഡാറ്റാബേസ്  ഉപയോഗിക്കുന്ന അവസാന പാക്കേജ് നശിപ്പിക്കപ്പെടുന്നു."
@@ -126,8 +120,8 @@ msgstr "${PACKAGE}നുളള അടയാളവാക്ക് :"
 #~ "The same stands for /etc/firebird/${FB_VER}/SYSDBA.password, where the "
 #~ "password for SYSDBA is kept."
 #~ msgstr ""
-#~ "സിസ്ഡിബിഎ (SYSDBA)യുടെ അടയാളവാക്ക് വച്ചിരിക്കുന്ന  /etc/firebird/${FB_VER}/SYSDBA."
-#~ "password നും ഇത് ബാധകമാണ്. "
+#~ "സിസ്ഡിബിഎ (SYSDBA)യുടെ അടയാളവാക്ക് വച്ചിരിക്കുന്ന  /etc/firebird/${FB_VER}/"
+#~ "SYSDBA.password നും ഇത് ബാധകമാണ്. "
 
 #~ msgid "Delete databases from /var/lib/firebird/${FB_VER}/data?"
 #~ msgstr "/var/lib/firebird/${FB_VER}/data യില്‍ നിന്നും ഡാറ്റാബേസുകള്‍ നീക്കം ചെയ്യണോ?"

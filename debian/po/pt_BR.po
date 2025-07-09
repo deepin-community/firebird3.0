@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: firebird2.0\n"
 "Report-Msgid-Bugs-To: firebird3.0@packages.debian.org\n"
-"POT-Creation-Date: 2015-05-11 10:00+0300\n"
+"POT-Creation-Date: 2024-12-29 08:30+0200\n"
 "PO-Revision-Date: 2007-04-21 15:10-0300\n"
 "Last-Translator: André Luís Lopes <andrelop@debian.org>\n"
 "Language-Team: Debian-BR Project <debian-l10n-portuguese@lists.debian.org>\n"
@@ -73,29 +73,23 @@ msgstr ""
 msgid "To keep your existing password, leave this blank."
 msgstr "Para manter sua senha atual, mantenha este campo em branco."
 
-#. Type: error
-#. Description
-#: ../firebird3.0-server.templates:4001
-msgid "firebird${FB_VER}-${FB_FLAVOUR} server is in use"
-msgstr "Servidor firebird${FB_VER}-${FB_FLAVOUR} está em uso"
-
-#. Type: error
-#. Description
-#: ../firebird3.0-server.templates:4001
-msgid ""
-" To ensure data integrity, package removal/upgrade is aborted. Please stop "
-"all local and remote clients before removing or upgrading firebird${FB_VER}-"
-"${FB_FLAVOUR}"
-msgstr ""
-"Para assegurar a integridade dos dados, a remoção/atualização do pacote foi "
-"abortada. Por favor, desconecte todos os clientes locais e remotos antes de "
-"remover ou atualizar o firebird${FB_VER}-${FB_FLAVOUR}"
-
 #. Type: title
 #. Description
-#: ../firebird3.0-server.templates:5001
+#: ../firebird3.0-server.templates:4001
 msgid "Password for firebird ${FB_VER}"
 msgstr "Senha para firebird ${FB_VER}"
+
+#~ msgid "firebird${FB_VER}-${FB_FLAVOUR} server is in use"
+#~ msgstr "Servidor firebird${FB_VER}-${FB_FLAVOUR} está em uso"
+
+#~ msgid ""
+#~ " To ensure data integrity, package removal/upgrade is aborted. Please "
+#~ "stop all local and remote clients before removing or upgrading firebird$"
+#~ "{FB_VER}-${FB_FLAVOUR}"
+#~ msgstr ""
+#~ "Para assegurar a integridade dos dados, a remoção/atualização do pacote "
+#~ "foi abortada. Por favor, desconecte todos os clientes locais e remotos "
+#~ "antes de remover ou atualizar o firebird${FB_VER}-${FB_FLAVOUR}"
 
 #, fuzzy
 #~| msgid "Enabled firebird version:"
@@ -106,8 +100,8 @@ msgstr "Senha para firebird ${FB_VER}"
 #~ msgstr "Remover senha da base de dados?"
 
 #~ msgid ""
-#~ "The last package that uses password database at /var/lib/firebird/"
-#~ "${FB_VER}/system/security2.fdb is being purged."
+#~ "The last package that uses password database at /var/lib/firebird/$"
+#~ "{FB_VER}/system/security2.fdb is being purged."
 #~ msgstr ""
 #~ "O último pacote que utiliza a senha da base de dados em /var/lib/firebird/"
 #~ "${FB_VER}/system/security2.fdb está sendo removido."
@@ -124,8 +118,8 @@ msgstr "Senha para firebird ${FB_VER}"
 #~ "The same stands for /etc/firebird/${FB_VER}/SYSDBA.password, where the "
 #~ "password for SYSDBA is kept."
 #~ msgstr ""
-#~ "O mesmo pode ser dito em relação ao arquivo /etc/firebird/${FB_VER}SYSDBA."
-#~ "password, onde a senha para o usuário SYSDBA é mantida."
+#~ "O mesmo pode ser dito em relação ao arquivo /etc/firebird/${FB_VER}"
+#~ "SYSDBA.password, onde a senha para o usuário SYSDBA é mantida."
 
 #~ msgid "Delete databases from /var/lib/firebird/${FB_VER}/data?"
 #~ msgstr "Remover as bases de dados de /var/lib/firebird/${FB_VER}/data?"
@@ -138,16 +132,16 @@ msgstr "Senha para firebird ${FB_VER}"
 #~ msgstr ""
 #~ "Você pode querer remover todas as bases de dados do diretório padrão de "
 #~ "bases de dados do firebird, /var/lib/firebird/${FB_VER}/data. Caso você "
-#~ "escolha esta opção, todos os arquivos que finalizam com as extensões \"."
-#~ "fdb\" e \".fbk\" no diretório especificado acima e seus subdiretórios "
+#~ "escolha esta opção, todos os arquivos que finalizam com as extensões "
+#~ "\".fdb\" e \".fbk\" no diretório especificado acima e seus subdiretórios "
 #~ "serão removidos."
 
 #~ msgid ""
 #~ "Note that any databases outside of /var/lib/firebird/${FB_VER}/data will "
 #~ "not be affected."
 #~ msgstr ""
-#~ "Note que quaisquer bases de dados fora do diretório /var/lib/firebird/"
-#~ "${FB_VER}/data não serão afetadas."
+#~ "Note que quaisquer bases de dados fora do diretório /var/lib/firebird/$"
+#~ "{FB_VER}/data não serão afetadas."
 
 #~ msgid ""
 #~ "Several firebird versions may be installed, but only one may be enabled "

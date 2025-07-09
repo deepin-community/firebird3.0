@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: firebird3.0\n"
 "Report-Msgid-Bugs-To: firebird3.0@packages.debian.org\n"
-"POT-Creation-Date: 2015-05-11 10:00+0300\n"
+"POT-Creation-Date: 2024-12-29 08:30+0200\n"
 "PO-Revision-Date: 2017-01-10 17:30+01:00\n"
 "Last-Translator: Joe Hansen <joedalton2@yahoo.dk>\n"
 "Language-Team: Danish <debian-l10n-danish@lists.debian.org>\n"
@@ -70,27 +70,20 @@ msgstr ""
 msgid "To keep your existing password, leave this blank."
 msgstr "For at beholde din eksisterende adgangskode, efterlad tom."
 
-#. Type: error
-#. Description
-#: ../firebird3.0-server.templates:4001
-msgid "firebird${FB_VER}-${FB_FLAVOUR} server is in use"
-msgstr "Serveren firebird${FB_VER}-${FB_FLAVOUR} er i brug"
-
-#. Type: error
-#. Description
-#: ../firebird3.0-server.templates:4001
-msgid ""
-" To ensure data integrity, package removal/upgrade is aborted. Please stop "
-"all local and remote clients before removing or upgrading firebird${FB_VER}-"
-"${FB_FLAVOUR}"
-msgstr ""
-" For at sikre dataintegritet, er pakkefjernelse/-opgradering afbrudt. Stop "
-"venligst alle lokale og eksterne klienter før fjernelse eller opgradering af "
-"firebird${FB_VER}-${FB_FLAVOUR}"
-
 #. Type: title
 #. Description
-#: ../firebird3.0-server.templates:5001
+#: ../firebird3.0-server.templates:4001
 msgid "Password for firebird ${FB_VER}"
 msgstr "Adgangskode for firebird ${FB_VER}"
 
+#~ msgid "firebird${FB_VER}-${FB_FLAVOUR} server is in use"
+#~ msgstr "Serveren firebird${FB_VER}-${FB_FLAVOUR} er i brug"
+
+#~ msgid ""
+#~ " To ensure data integrity, package removal/upgrade is aborted. Please "
+#~ "stop all local and remote clients before removing or upgrading firebird$"
+#~ "{FB_VER}-${FB_FLAVOUR}"
+#~ msgstr ""
+#~ " For at sikre dataintegritet, er pakkefjernelse/-opgradering afbrudt. "
+#~ "Stop venligst alle lokale og eksterne klienter før fjernelse eller "
+#~ "opgradering af firebird${FB_VER}-${FB_FLAVOUR}"

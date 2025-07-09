@@ -6,7 +6,7 @@ Bug: http://tracker.firebirdsql.org/browse/CORE-5779
 
 --- a/configure.ac
 +++ b/configure.ac
-@@ -251,6 +251,18 @@ dnl CPU_TYPE=ppc64
+@@ -264,6 +264,18 @@ dnl CPU_TYPE=ppc64
      libdir=/usr/lib64
      ;;
  
@@ -82,9 +82,9 @@ Bug: http://tracker.firebirdsql.org/browse/CORE-5779
  } // anonymous namespace
 --- a/src/common/common.h
 +++ b/src/common/common.h
-@@ -135,6 +135,10 @@
- #define FB_CPU CpuArm64
- #endif /* ARM64 */
+@@ -138,6 +138,10 @@
+ #define FB_CPU CpuArm
+ #endif /* ARM */
  
 +#ifdef RISCV64
 +#define FB_CPU CpuRiscV64

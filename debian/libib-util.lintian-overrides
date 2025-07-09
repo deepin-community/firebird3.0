@@ -13,5 +13,5 @@
 #    firebird server package, and they all depend on libib-util
 libib-util: shlib-without-versioned-soname usr/lib/*/libib_util.so libib_util.so
 
-# this is not a dev package
-libib-util: lacks-unversioned-link-to-shared-library example: usr/lib/TRIPLET/libib_util.so [usr/lib/TRIPLET/libib_util.so]
+# there is no unversioned link, it is the library itself
+libib-util: lacks-unversioned-link-to-shared-library example: usr/lib/*/libib_util.so [usr/lib/*/libib_util.so]

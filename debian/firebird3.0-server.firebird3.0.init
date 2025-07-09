@@ -38,9 +38,14 @@ FB_OPTS="-daemon -forever -pidfile $PIDFILE"
 NAME="Firebird $FB_VER server"
 
 # Check the guardian is there and is executable.
-FBGUARD=/usr/sbin/fbguard
-FBSERVER=/usr/sbin/firebird
+FBGUARD="/usr/lib/firebird/$FB_VER/bin/fbguard"
+FBSERVER="/usr/lib/firebird/$FB_VER/bin/firebird"
 [ -x $FBGUARD ] && [ -x $FBSERVER ] || exit 0
+
+LIB_DIR=$(ldd "$FBSERVER" | grep libfbclient | head -1 | sed 's,.* => ,,; s,/libfbclient.*,,' )
+LIB_DIR=$(realpath "$LIB_DIR")
+
+export FIREBIRD="$LIB_DIR/firebird/$FB_VER"
 
 # workaround of splashy's #400598
 # define RUNLEVEL to avoind unbound variable error
@@ -56,8 +61,8 @@ case "${1:-}" in
         log_action_begin_msg "Starting $NAME"
         create_var_run_firebird
         # remove stale pid file
-        rm -f $PIDFILE
-        start-stop-daemon --start --quiet --chuid $FBRunUser --pidfile $PIDFILE --exec $FBGUARD -- $FB_OPTS 2>&1 | ( grep -v 'server has been successfully started' || true )
+        rm -f "$PIDFILE"
+        start-stop-daemon --start --quiet --chuid "$FBRunUser" --pidfile "$PIDFILE" --exec "$FBGUARD" -- $FB_OPTS 2>&1 | ( grep -v 'server has been successfully started' || true )
         RETVAL=$?
         log_action_end_msg $RETVAL
     fi
@@ -66,9 +71,9 @@ case "${1:-}" in
     stop)
     if pidof $FBGUARD > /dev/null; then
         log_action_begin_msg "Stopping $NAME"
-	start-stop-daemon --stop --quiet --oknodo --retry 10 --exec $FBGUARD \
+	start-stop-daemon --stop --quiet --oknodo --retry 10 --exec "$FBGUARD" \
 	    && \
-	start-stop-daemon --stop --quiet --oknodo --retry 15 --exec $FBSERVER --pidfile $PIDFILE
+	start-stop-daemon --stop --quiet --oknodo --retry 15 --exec "$FBSERVER" --pidfile "$PIDFILE"
 
         RETVAL=$?
         log_action_end_msg $RETVAL

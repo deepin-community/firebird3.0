@@ -1,0 +1,17 @@
+Name: firebird
+Link: /usr/share/man/man8/firebird.8.gz
+Priority: 300
+Alternative: /usr/share/firebird/3.0/man/man8/firebird.8.gz
+Dependents:
+  /usr/share/man/man1/fb_lock_print.1.gz fb_lock_print.1.gz /usr/share/firebird/3.0/man/man1/fb_lock_print.1.gz
+  /usr/share/man/man1/fbguard.8.gz       fbguard.8.gz       /usr/share/firebird/3.0/man/man8/fbguard.8.gz
+  /usr/share/man/man1/fbstat.1.gz        fbstat.1.gz        /usr/share/firebird/3.0/man/man1/fbstat.1.gz
+  /usr/share/man/man1/fbsvcmgr.1.gz      fbsvcmgr.1.gz      /usr/share/firebird/3.0/man/man1/fbsvcmgr.1.gz
+  /usr/share/man/man1/fbtracemgr.1.gz    fbtracemgr.1.gz    /usr/share/firebird/3.0/man/man1/fbtracemgr.1.gz
+  /usr/share/man/man1/gbak.1.gz          gbak.1.gz          /usr/share/firebird/3.0/man/man1/gbak.1.gz
+  /usr/share/man/man1/gfix.1.gz          gfix.1.gz          /usr/share/firebird/3.0/man/man1/gfix.1.gz
+  /usr/share/man/man1/gpre.1.gz          gpre.1.gz          /usr/share/firebird/3.0/man/man1/gpre.1.gz
+  /usr/share/man/man1/gsec.1.gz          gsec.1.gz          /usr/share/firebird/3.0/man/man1/gsec.1.gz
+  /usr/share/man/man1/isql-fb.1.gz       isql-fb.1.gz       /usr/share/firebird/3.0/man/man1/isql-fb.1.gz
+  /usr/share/man/man1/nbackup.1.gz       nbackup.1.gz       /usr/share/firebird/3.0/man/man1/nbackup.1.gz
+

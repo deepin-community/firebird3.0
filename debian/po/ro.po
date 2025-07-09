@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ro\n"
 "Report-Msgid-Bugs-To: firebird3.0@packages.debian.org\n"
-"POT-Creation-Date: 2015-05-11 10:00+0300\n"
+"POT-Creation-Date: 2024-12-29 08:30+0200\n"
 "PO-Revision-Date: 2008-03-18 12:03+0200\n"
 "Last-Translator: Eddy Petrișor <eddy.petrisor@gmail.com>\n"
 "Language-Team: Romanian <debian-l10n-romanian@lists.debian.org>\n"
@@ -76,29 +76,23 @@ msgstr ""
 msgid "To keep your existing password, leave this blank."
 msgstr "Pentru a păstra parola existentă, lăsați gol acest câmp."
 
-#. Type: error
-#. Description
-#: ../firebird3.0-server.templates:4001
-msgid "firebird${FB_VER}-${FB_FLAVOUR} server is in use"
-msgstr "Serverul firebird${FB_VER}-${FB_FLAVOUR} este, în prezent, folosit"
-
-#. Type: error
-#. Description
-#: ../firebird3.0-server.templates:4001
-msgid ""
-" To ensure data integrity, package removal/upgrade is aborted. Please stop "
-"all local and remote clients before removing or upgrading firebird${FB_VER}-"
-"${FB_FLAVOUR}"
-msgstr ""
-" Pentru a asigura integritatea datelor se abandonează ștergerea/"
-"actualizarea. Înainte de ștergerea sau actualizarea lui firebird${FB_VER}-"
-"${FB_FLAVOUR}, opriți toții clienții, fie ei locali sau de la distanță."
-
 #. Type: title
 #. Description
-#: ../firebird3.0-server.templates:5001
+#: ../firebird3.0-server.templates:4001
 msgid "Password for firebird ${FB_VER}"
 msgstr "Parola pentru firebird ${FB_VER}"
+
+#~ msgid "firebird${FB_VER}-${FB_FLAVOUR} server is in use"
+#~ msgstr "Serverul firebird${FB_VER}-${FB_FLAVOUR} este, în prezent, folosit"
+
+#~ msgid ""
+#~ " To ensure data integrity, package removal/upgrade is aborted. Please "
+#~ "stop all local and remote clients before removing or upgrading firebird$"
+#~ "{FB_VER}-${FB_FLAVOUR}"
+#~ msgstr ""
+#~ " Pentru a asigura integritatea datelor se abandonează ștergerea/"
+#~ "actualizarea. Înainte de ștergerea sau actualizarea lui firebird${FB_VER}-"
+#~ "${FB_FLAVOUR}, opriți toții clienții, fie ei locali sau de la distanță."
 
 #~ msgid "Enable Firebird server?"
 #~ msgstr "Se activează serverul Firebird?"
@@ -117,8 +111,8 @@ msgstr "Parola pentru firebird ${FB_VER}"
 #~ msgstr "Se șterge baza de date cu parole?"
 
 #~ msgid ""
-#~ "The last package that uses password database at /var/lib/firebird/"
-#~ "${FB_VER}/system/security2.fdb is being purged."
+#~ "The last package that uses password database at /var/lib/firebird/$"
+#~ "{FB_VER}/system/security2.fdb is being purged."
 #~ msgstr ""
 #~ "Ultimul pachet care folosește baza de date de parole de la /var/lib/"
 #~ "firebird/${FB_VER}/system/security2.fdb este șters complet chiar acum."
@@ -135,8 +129,8 @@ msgstr "Parola pentru firebird ${FB_VER}"
 #~ "The same stands for /etc/firebird/${FB_VER}/SYSDBA.password, where the "
 #~ "password for SYSDBA is kept."
 #~ msgstr ""
-#~ "Același lucru este valabil pentru /etc/firebird/${FB_VER}/SYSDBA."
-#~ "password, locul în care se ține parola pentru SYSDBA."
+#~ "Același lucru este valabil pentru /etc/firebird/${FB_VER}/"
+#~ "SYSDBA.password, locul în care se ține parola pentru SYSDBA."
 
 #~ msgid "Delete databases from /var/lib/firebird/${FB_VER}/data?"
 #~ msgstr "Se șterg bazele de date din /var/lib/firebird/${FB_VER}/data?"
@@ -149,8 +143,8 @@ msgstr "Parola pentru firebird ${FB_VER}"
 #~ msgstr ""
 #~ "Este posibil să doriți să ștergeți toate bazele de date din directorul de "
 #~ "baze de date standard al lui firebird, /var/lib/firebird/${FB_VER}/data. "
-#~ "Dacă alegeți această opțiune, vor fi șterse toate fișierele cu sufixele „."
-#~ "fbd” și „.fbk” din acel director și din subdirectoarele acestuia."
+#~ "Dacă alegeți această opțiune, vor fi șterse toate fișierele cu sufixele "
+#~ "„.fbd” și „.fbk” din acel director și din subdirectoarele acestuia."
 
 #~ msgid ""
 #~ "Note that any databases outside of /var/lib/firebird/${FB_VER}/data will "

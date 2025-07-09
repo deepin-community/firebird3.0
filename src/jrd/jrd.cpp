@@ -1069,7 +1069,7 @@ namespace {
 static VdnResult	verifyDatabaseName(const PathName&, FbStatusVector*, bool);
 
 static void		unwindAttach(thread_db* tdbb, const Exception& ex, FbStatusVector* userStatus,
-	Jrd::Attachment* attachment, Database* dbb, bool internalFlag);
+	Jrd::Attachment* attachment, Database* dbb, const DatabaseOptions& options, bool internalFlag);
 static JAttachment*	initAttachment(thread_db*, const PathName&, const PathName&, RefPtr<const Config>, bool,
 	const DatabaseOptions&, RefMutexUnlock&, IPluginConfig*, JProvider*);
 static JAttachment*	create_attachment(const PathName&, Database*, JProvider* provider, const DatabaseOptions&, bool newDb);
@@ -1981,7 +1981,7 @@ JAttachment* JProvider::internalAttach(CheckStatusWrapper* user_status, const ch
 					filename, options, false, user_status);
 			}
 
-			unwindAttach(tdbb, ex, user_status, attachment, dbb, existingId);
+			unwindAttach(tdbb, ex, user_status, attachment, dbb, options, existingId);
 		}
 	}
 	catch (const Exception& ex)
@@ -2456,6 +2456,10 @@ JAttachment* JProvider::createDatabase(CheckStatusWrapper* user_status, const ch
 	RefDeb(DEB_AR_JATT, "JProvider::createDatabase");
 	try
 	{
+		// In case of problems when creating shared memory, it is better to
+		// fail early, before attempt to create database file.
+		initMappingIpc();
+
 		ThreadContextHolder tdbb(user_status);
 		MutexEnsureUnlock guardDbInit(dbInitMutex, FB_FUNCTION);
 
@@ -2832,7 +2836,7 @@ JAttachment* JProvider::createDatabase(CheckStatusWrapper* user_status, const ch
 			trace_failed_attach(attachment ? attachment->att_trace_manager : NULL,
 				filename, options, true, user_status);
 
-			unwindAttach(tdbb, ex, user_status, attachment, dbb, false);
+			unwindAttach(tdbb, ex, user_status, attachment, dbb, options, false);
 		}
 	}
 	catch (const Exception& ex)
@@ -7376,7 +7380,7 @@ static void getUserInfo(UserId& user, const DatabaseOptions& options,
 }
 
 static void unwindAttach(thread_db* tdbb, const Exception& ex, FbStatusVector* userStatus,
-	Jrd::Attachment* attachment, Database* dbb, bool internalFlag)
+	Jrd::Attachment* attachment, Database* dbb, const DatabaseOptions& options, bool internalFlag)
 {
 	RefDeb(DEB_RLS_JATT, "unwindAttach");
 	RefDeb(DEB_AR_JATT, "unwindAttach");
@@ -7391,6 +7395,10 @@ static void unwindAttach(thread_db* tdbb, const Exception& ex, FbStatusVector* u
 		{
 			fb_assert(!dbb->locked());
 			ThreadStatusGuard temp_status(tdbb);
+
+			// In case when sweep attachment failed try to release appropriate lock
+			if (options.dpb_sweep)
+				dbb->clearSweepStarting();
 
 			if (!attachment)
 				attachment = tdbb->getAttachment();
@@ -8379,6 +8387,8 @@ void TrigVector::release() const
 
 void TrigVector::release(thread_db* tdbb) const
 {
+	fb_assert(useCount.value() > 0);
+
 	if (--useCount == 0)
 	{
 		const const_iterator e = end();
