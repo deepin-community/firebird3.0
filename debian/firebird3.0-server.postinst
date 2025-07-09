@@ -30,7 +30,7 @@ FB_VER=3.0
 . /usr/share/firebird${FB_VER}-common/functions.sh
 
 checkFirebirdAccount() {
-
+    getent passwd firebird > /dev/null || \
     adduser --system --quiet --home /var/lib/firebird \
         --group --gecos "Firebird Database Administator" firebird
 }

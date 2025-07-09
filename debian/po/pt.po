@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: firebird2\n"
 "Report-Msgid-Bugs-To: firebird3.0@packages.debian.org\n"
-"POT-Creation-Date: 2015-05-11 10:00+0300\n"
+"POT-Creation-Date: 2024-12-29 08:30+0200\n"
 "PO-Revision-Date: 2008-03-17 09:41+0000\n"
 "Last-Translator: Miguel Figueiredo <elmig@debianpt.org>\n"
 "Language-Team: Portuguese <traduz@debianpt.org>\n"
@@ -71,29 +71,23 @@ msgstr ""
 msgid "To keep your existing password, leave this blank."
 msgstr "Para manter a palavra-chave actual, deixe isto vazio."
 
-#. Type: error
-#. Description
-#: ../firebird3.0-server.templates:4001
-msgid "firebird${FB_VER}-${FB_FLAVOUR} server is in use"
-msgstr "Está em utilização o servidor firebird${FB_VER}-${FB_FLAVOUR}"
-
-#. Type: error
-#. Description
-#: ../firebird3.0-server.templates:4001
-msgid ""
-" To ensure data integrity, package removal/upgrade is aborted. Please stop "
-"all local and remote clients before removing or upgrading firebird${FB_VER}-"
-"${FB_FLAVOUR}"
-msgstr ""
-"Para assegurar a integridade de dados, a remoção/actualização do pacote foi "
-"abortada. Por favor páre todos os clientes locais e remotos antes de remover "
-"ou actualizar o firebird${FB_VER}-${FB_FLAVOUR}"
-
 #. Type: title
 #. Description
-#: ../firebird3.0-server.templates:5001
+#: ../firebird3.0-server.templates:4001
 msgid "Password for firebird ${FB_VER}"
 msgstr "Palavra-passe para firebird ${FB_VER}"
+
+#~ msgid "firebird${FB_VER}-${FB_FLAVOUR} server is in use"
+#~ msgstr "Está em utilização o servidor firebird${FB_VER}-${FB_FLAVOUR}"
+
+#~ msgid ""
+#~ " To ensure data integrity, package removal/upgrade is aborted. Please "
+#~ "stop all local and remote clients before removing or upgrading firebird$"
+#~ "{FB_VER}-${FB_FLAVOUR}"
+#~ msgstr ""
+#~ "Para assegurar a integridade de dados, a remoção/actualização do pacote "
+#~ "foi abortada. Por favor páre todos os clientes locais e remotos antes de "
+#~ "remover ou actualizar o firebird${FB_VER}-${FB_FLAVOUR}"
 
 #~ msgid "Enable Firebird server?"
 #~ msgstr "Activr o servidor Firebird:"
@@ -112,8 +106,8 @@ msgstr "Palavra-passe para firebird ${FB_VER}"
 #~ msgstr "Apagar a base de dados de palavras-chave?"
 
 #~ msgid ""
-#~ "The last package that uses password database at /var/lib/firebird/"
-#~ "${FB_VER}/system/security2.fdb is being purged."
+#~ "The last package that uses password database at /var/lib/firebird/$"
+#~ "{FB_VER}/system/security2.fdb is being purged."
 #~ msgstr ""
 #~ "O último pacote que utiliza a base de dados de palavras-chave em /var/lib/"
 #~ "firebird/${FB_VER}/system/security2.fdb está a ser 'purgado'."
@@ -123,8 +117,8 @@ msgstr "Palavra-passe para firebird ${FB_VER}"
 #~ "remove it if you don't plan re-installing firebird${FB_VER}."
 #~ msgstr ""
 #~ "Deixar a base de dados de segurança pode apresentar um risco de "
-#~ "segurança. É boa ideia removê-la se não planeia re-instalar o firebird"
-#~ "${FB_VER}."
+#~ "segurança. É boa ideia removê-la se não planeia re-instalar o firebird$"
+#~ "{FB_VER}."
 
 #~ msgid ""
 #~ "The same stands for /etc/firebird/${FB_VER}/SYSDBA.password, where the "

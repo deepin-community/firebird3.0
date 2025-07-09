@@ -1,0 +1,119 @@
+#!/bin/sh
+
+set -e
+set -u
+
+warn() {
+    echo "$@" >&2
+}
+
+die() {
+    warn "$@"
+    exit 1
+}
+
+FB_VER=
+while [ -n "${1:-}" ]; do
+    case "$1" in
+        --fb-ver)
+            [ -n "${2:-}" ] || die "--fb-ver requires an argiment"
+            FB_VER="$2"
+            shift 2
+            ;;
+        *)
+            die "Unknown argument '$1'"
+            ;;
+    esac
+done
+
+[ -n "$FB_VER" ] || die "--fb-ver option is mandatory"
+
+ETC="/etc/firebird/$FB_VER"
+
+get_service_port() {
+    local CONF="$1"
+
+    local PORT
+    PORT=$(
+    "/usr/share/firebird/$FB_VER/dump-firebird-config" "$CONF" \
+        | grep -E "^\\s*RemoteServicePort\\s*=\\s*[[:digit:]]+\\s*\$" \
+        | tail -1 \
+        | sed 's/.*=//; s/\s\+//g')
+
+    echo "$PORT"
+}
+
+port_used() {
+    local PORT="$1"
+    local DIR
+
+    for DIR in $(find /etc/firebird -mindepth 1 -maxdepth 1 -type d); do
+        if [ "$DIR" = "$ETC" ]; then
+            # this is the version currently being configured
+            # we need to know if any *other* version uses the port
+            continue;
+        fi
+
+        if [ -e "$DIR/firebird.conf" ]; then
+            if [ "$(get_service_port "$DIR/firebird.conf")" = "$PORT" ]; then
+                return 0;   # port used
+            fi
+        fi
+    done
+
+    return 1    # not used
+}
+
+set_firebird_port() {
+    local PORT="$1"
+    local CONF="$2"
+
+    if grep --quiet -E "^\\s*RemoteServicePort\\s*=" "$CONF"; then
+        # replace existing RemoteServicePort= setting
+        sed -i -e "s/^\\s*RemoteServicePort\\s*=.*/RemoteServicePort = $PORT/" "$CONF"
+    elif grep --quiet -E "^\\s*#\\s*RemoteServicePort\\s*=" "$CONF"; then
+        # append the setting after a commented one
+        sed -i -e "/^\\s*#\\s*RemoteServicePort\\s*=.*/ a RemoteServicePort = $PORT" "$CONF"
+    else
+        # append at the end of the config
+        echo "RemoteServicePort = $PORT" >> "$CONF"
+    fi
+
+    # double-check
+    [ "$(get_service_port "$ETC/firebird.conf")" = "$PORT" ] \
+        || die "Failed to set service port to $PORT. Perhaps overridden in firebird.conf?"
+}
+
+[ -e "$ETC/service-port.conf" ] || touch "$ETC/service-port.conf"
+
+
+CURRENT_PORT=$(get_service_port "$ETC/firebird.conf")
+
+if [ -n "$CURRENT_PORT" ]; then
+    port_used "$CURRENT_PORT" || exit 0
+fi
+
+MIN_PORT=3050
+MAX_PORT=3059
+
+PROSPECTIVE_PORT=$MIN_PORT
+
+while port_used $PROSPECTIVE_PORT; do
+    if [ $PROSPECTIVE_PORT -lt $MAX_PORT ]; then
+        PROSPECTIVE_PORT=$(( $PROSPECTIVE_PORT + 1 ))
+    else
+        warn "Unable to find free TCP port for Firebird $FB_VER service"
+        warn "Tried ports from $MIN_PORT to $MAX_PORT"
+        warn "Leaving the port at $CURRENT_PORT and hoping for the best"
+        exit 0
+    fi
+done
+
+if [ $PROSPECTIVE_PORT -le $MAX_PORT ]; then
+    echo "Configuring $ETC/service-port.conf to use port $PROSPECTIVE_PORT"
+    set_firebird_port "$PROSPECTIVE_PORT" "$ETC/service-port.conf"
+fi
+
+exit 0
+
+# vi: set sw=4 ts=8 filetype=sh sts=4 :

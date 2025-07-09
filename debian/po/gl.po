@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: firebird2.0\n"
 "Report-Msgid-Bugs-To: firebird3.0@packages.debian.org\n"
-"POT-Creation-Date: 2015-05-11 10:00+0300\n"
+"POT-Creation-Date: 2024-12-29 08:30+0200\n"
 "PO-Revision-Date: 2008-03-13 22:54+0000\n"
 "Last-Translator: Jacobo Tarrio <jtarrio@debian.org>\n"
 "Language-Team: Galician <proxecto@trasno.net>\n"
@@ -48,10 +48,11 @@ msgid ""
 "database too, using the gsec utility), or you may use dpkg-reconfigure to "
 "update both."
 msgstr ""
-"O contrasinal está armacenado no ficheiro /etc/firebird/${FB_VER}/SYSDBA."
-"password (só lexible para o administrador). Pode modificalo aí (non esqueza "
-"actualizar tamén a base de datos de seguridade empregando a utilidade \"gsec"
-"\"), ou pode empregar dpkg-reconfigure para actualizar as dúas cousas."
+"O contrasinal está armacenado no ficheiro /etc/firebird/${FB_VER}/"
+"SYSDBA.password (só lexible para o administrador). Pode modificalo aí (non "
+"esqueza actualizar tamén a base de datos de seguridade empregando a "
+"utilidade \"gsec\"), ou pode empregar dpkg-reconfigure para actualizar as "
+"dúas cousas."
 
 #. Type: password
 #. Description
@@ -69,29 +70,23 @@ msgstr ""
 msgid "To keep your existing password, leave this blank."
 msgstr "Para conservar o contrasinal existente, déixeo en branco."
 
-#. Type: error
-#. Description
-#: ../firebird3.0-server.templates:4001
-msgid "firebird${FB_VER}-${FB_FLAVOUR} server is in use"
-msgstr "Estase a empregar o servidor firebird${FB_VER}-${FB_FLAVOUR}"
-
-#. Type: error
-#. Description
-#: ../firebird3.0-server.templates:4001
-msgid ""
-" To ensure data integrity, package removal/upgrade is aborted. Please stop "
-"all local and remote clients before removing or upgrading firebird${FB_VER}-"
-"${FB_FLAVOUR}"
-msgstr ""
-"Para asegurar a integridade dos datos, cancelouse a eliminación/"
-"actualización de paquetes. Deteña os clientes locais e remotos antes de "
-"eliminar ou actualizar firebird${FB_VER}-${FB_FLAVOUR}"
-
 #. Type: title
 #. Description
-#: ../firebird3.0-server.templates:5001
+#: ../firebird3.0-server.templates:4001
 msgid "Password for firebird ${FB_VER}"
 msgstr "Contrasinal de firebird ${FB_VER}:"
+
+#~ msgid "firebird${FB_VER}-${FB_FLAVOUR} server is in use"
+#~ msgstr "Estase a empregar o servidor firebird${FB_VER}-${FB_FLAVOUR}"
+
+#~ msgid ""
+#~ " To ensure data integrity, package removal/upgrade is aborted. Please "
+#~ "stop all local and remote clients before removing or upgrading firebird$"
+#~ "{FB_VER}-${FB_FLAVOUR}"
+#~ msgstr ""
+#~ "Para asegurar a integridade dos datos, cancelouse a eliminación/"
+#~ "actualización de paquetes. Deteña os clientes locais e remotos antes de "
+#~ "eliminar ou actualizar firebird${FB_VER}-${FB_FLAVOUR}"
 
 #~ msgid "Enable Firebird server?"
 #~ msgstr "¿Activar o servidor Firebird?"
@@ -110,8 +105,8 @@ msgstr "Contrasinal de firebird ${FB_VER}:"
 #~ msgstr "¿Eliminar a base de datos de contrasinais?"
 
 #~ msgid ""
-#~ "The last package that uses password database at /var/lib/firebird/"
-#~ "${FB_VER}/system/security2.fdb is being purged."
+#~ "The last package that uses password database at /var/lib/firebird/$"
+#~ "{FB_VER}/system/security2.fdb is being purged."
 #~ msgstr ""
 #~ "Estase a purgar o último paquete que emprega unha base de datos en /var/"
 #~ "lib/firebird/${FB_VER}/system/security2.fdb."
@@ -141,8 +136,9 @@ msgstr "Contrasinal de firebird ${FB_VER}:"
 #~ msgstr ""
 #~ "Pode querer eliminar tódalas bases de datos do directorio estándar de "
 #~ "bases de datos de firebird, /var/lib/firebird/${FB_VER}/data. Se escolle "
-#~ "esta opción, hanse eliminar tódolos ficheiros con nomes rematados en \"."
-#~ "fdb\" e \".fbk\" do directorio indicado e de tódolos seus subdirectorios."
+#~ "esta opción, hanse eliminar tódolos ficheiros con nomes rematados en "
+#~ "\".fdb\" e \".fbk\" do directorio indicado e de tódolos seus "
+#~ "subdirectorios."
 
 #~ msgid ""
 #~ "Note that any databases outside of /var/lib/firebird/${FB_VER}/data will "

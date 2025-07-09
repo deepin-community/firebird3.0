@@ -21,6 +21,7 @@ ULFB="usr/lib/$DEB_HOST_MULTIARCH/$FBDIR"
 VAR="var/lib/$FBDIR"
 CLIENT_SO_VER=2
 UTIL_SO_VER=
+ODS_VER=$(grep -E '^const \S+ ODS_CURRENT\b' src/jrd/ods.h | sed 's/.*ODS_CURRENT//; s/\;.*//')
 
 if echo ${DEB_BUILD_OPTIONS:-} | egrep -q '\bnodoc\b'; then
     NODOC="nodoc"
@@ -47,7 +48,7 @@ copy ()
 # Helper function used both in -super and -classic
 copy_utils()
 {
-    for s in gbak gfix gpre gsec gstat isql nbackup fbsvcmgr ;
+    for s in gbak gfix gpre gsec gstat isql nbackup fbsvcmgr fbtracemgr ;
     do
         target="$s"
         if [ "$target" = gstat ];
@@ -58,7 +59,7 @@ copy_utils()
             target=isql-fb
         fi
 
-        copy e "$D/usr/bin/$target" "$S/bin/$s"
+        copy e "$D/usr/lib/$FBDIR/bin/$target" "$S/bin/$s"
     done
 }
 
@@ -96,7 +97,7 @@ make_server_core () {
     install -m 0755 "$S/intl/libfbintl.so" "$D/$ULFB/intl/"
 
     ln -s "/etc/$FBDIR/fbintl.conf" "$D/$ULFB/intl/"
-    for f in firebird plugins; do
+    for f in firebird plugins service-port; do
         ln -s "/etc/$FBDIR/$f.conf" "$D/$ULFB/"
     done
 
@@ -114,31 +115,17 @@ make_server () {
     D="debian/$P"
     S=debian/firebird-image
 
-    mkdir -p "$D/usr/bin" "$D/usr/sbin" \
+    mkdir -p "$D/usr/lib/$FBDIR/bin" \
              "$D/etc/xinetd.d" "$D/etc/$FBDIR" "$D/$VAR/data" \
              "$D/$VAR/system" "$D/$VAR/backup" \
              "$D/$ULFB" \
              "$D/$COMMON_DOC/examples"
 
-    copy e "$D/usr/sbin"              \
-        "$S/bin/firebird"
+    copy e "$D/usr/lib/$FBDIR/bin" "$S/bin/firebird"
+    copy e "$D/usr/lib/$FBDIR/bin" "$S/bin/fbguard"
 
-    copy e "$D/usr/bin"       \
-        "$S/bin/fb_lock_print"   \
-        "$S/bin/fbtracemgr"
-
-
-    # manpages
-    if [ -z "$NODOC" ]; then
-        for u in fbtracemgr fb_lock_print ;
-        do
-            dh_installman -p "$P" "debian/man/$u.1"
-        done
-        for u in fbguard firebird ;
-        do
-            dh_installman -p "$P" "debian/man/$u.8"
-        done
-    fi
+    copy e "$D/usr/lib/$FBDIR/bin"       \
+        "$S/bin/fb_lock_print"
 
     install -m 0644 "debian/$P.xinetd" \
                     "$D/etc/xinetd.d/$FB_no_dots"
@@ -151,6 +138,8 @@ make_server () {
         ln -s "/etc/$FBDIR/$f.conf" "$D/$ULFB/"
     done
 
+    ln -s "/var/lib/$FBDIR/system/security${FB_MAJOR}.fdb" "$D/$ULFB/"
+
     # fix databases.conf: Remove references to employee
     sed -i -e'/^# Example Database/,/^employee / d' \
         "$D/etc/$FBDIR/databases.conf"
@@ -162,32 +151,42 @@ make_server () {
     touch "$D/$VAR/backup/no_empty"
     touch "$D/$VAR/data/no_empty"
 
-    copy e "$D/usr/sbin" "$S/bin/fbguard"
 
     # systemd support
-    mkdir -p "$D/lib/systemd/system"
-    cp gen/install/misc/*.service gen/install/misc/*.socket "$D/lib/systemd/system/"
-    sed -i -e"/^PIDFile/d; s,var/run/firebird/,run/firebird$FB_VER/,g; /^ExecStart/ a RuntimeDirectory=firebird$FB_VER" \
-        "$D/lib/systemd/system/"*.service
+    UNIT_DIR=$(pkgconf --variable=systemdsystemunitdir systemd)
+    TMPFILES_DIR=$(pkgconf --variable=tmpfilesdir systemd)
+    mkdir -p "$D$UNIT_DIR"
+    cp gen/install/misc/*.service gen/install/misc/*.socket "$D$UNIT_DIR/"
+    sed -i -f /dev/stdin "$D$UNIT_DIR/"*.service <<EOF
+/^PIDFile/d
+s,var/run/firebird/,run/firebird$FB_VER/,g
+s,^ExecStart=.\\+/fbguard,ExecStart=/usr/sbin/fbguard --fb-ver $FB_VER,
+/^ExecStart/ a RuntimeDirectory=firebird$FB_VER
+s, syslog.target , ,
+s,\\bsyslog.target ,,
+s, syslog.target\\b,,
+EOF
     sed -i -e"s,var/run/firebird/,run/firebird$FB_VER/,g; /^Accept=/ a RuntimeDirectory=firebird$FB_VER" \
-        "$D/lib/systemd/system/"*.socket
+        "$D/$UNIT_DIR/"*.socket
 
-    mkdir -p "$D/usr/lib/tmpfiles.d"
-    echo "d /tmp/firebird 0770 firebird firebird -" > "$D/usr/lib/tmpfiles.d/firebird$FB_VER.conf"
+    mkdir -p "$D$TMPFILES_DIR"
+    echo "d /tmp/firebird 0770 firebird firebird -" > "$D$TMPFILES_DIR/firebird$FB_VER.conf"
 
     mkdir "$D/$COMMON_DOC/examples/systemd"
-    mv "$D/lib/systemd/system/firebird-classic"* \
+    mv "$D$UNIT_DIR/firebird-classic"* \
         "$D/$COMMON_DOC/examples/systemd"
     rename "s/firebird-classic/firebird$FB_VER-classic/" \
         "$D/$COMMON_DOC/examples/systemd"/*
     sed -i -e"s,firebird-superserver,firebird$FB_VER-server," \
         "$D/$COMMON_DOC/examples/systemd"/*
     rename "s/firebird-superserver/firebird3.0/" \
-        "$D/lib/systemd/system"/*
+        "$D$UNIT_DIR"/*
     sed -i -e"s,firebird-classic,firebird$FB_VER-classic," \
-        "$D/lib/systemd/system/firebird$FB_VER.service"
+        "$D$UNIT_DIR/firebird$FB_VER.service"
 
     copy f "$D/$COMMON_DOC/examples" debian/reindex-db
+
+    ln -s "/run/firebird$FB_VER/fb_guard" "$D/$ULFB/fb_guard"
 
     doc_symlink
 }
@@ -240,17 +239,37 @@ make_utils () {
     D="debian/$P"
     S=debian/firebird-image
 
-    mkdir -p "$D/usr/bin"
+    mkdir -p "$D/usr/lib/$FBDIR/bin"
+    mkdir -p "$D/$ULFB/bin"
 
     copy_utils
 
     # manpages
-    if [ -z "$NODOC" ]; then
-        for u in fbstat gbak gsec isql-fb gfix gpre nbackup fbsvcmgr ;
-        do
-            dh_installman -p "$P" "debian/man/$u.1"
-        done
-    fi
+    # Ignore $NODOC, because they are used by the alternative system
+    mkdir -p "$D/usr/share/$FBDIR/man/man1" 
+    for u in fbstat gbak gsec isql-fb gfix gpre nbackup fbsvcmgr \
+             fbtracemgr fb_lock_print fb_config ;
+    do
+        copy f "$D/usr/share/$FBDIR/man/man1/" "debian/man/$u.1"
+        gzip -9 -n "$D/usr/share/$FBDIR/man/man1/$u.1"
+    done
+    mkdir -p "$D/usr/share/$FBDIR/man/man8" 
+    for u in fbguard firebird ;
+    do
+        copy f "$D/usr/share/$FBDIR/man/man8/" "debian/man/$u.8"
+        gzip -9 -n "$D/usr/share/$FBDIR/man/man8/$u.8"
+    done
+
+    for u in fbstat gbak gsec isql-fb gfix gpre nbackup fbsvcmgr fbtracemgr fb_lock_print;
+    do
+        ln -s "/usr/share/firebird-utils/fb_bin_wrapper_$FB_VER" "$D/$ULFB/bin/$u"
+    done
+
+    for u in fbguard firebird;
+    do
+        ln -s "/usr/share/firebird-utils/fb_sbin_wrapper_$FB_VER" "$D/$ULFB/bin/$u"
+    done
+
 
     doc_symlink
 }
@@ -268,7 +287,16 @@ make_common () {
 
     # config
     copy f "$D/etc/$FBDIR" "$S/firebird.conf"
-    sed -i -e '/^#RemoteBindAddress/ a RemoteBindAddress = localhost' "$D/etc/$FBDIR/firebird.conf"
+    sed -i -f /dev/stdin "$D/etc/$FBDIR/firebird.conf" <<EOF
+/^#RemoteBindAddress/ a RemoteBindAddress = localhost
+s|^#SecurityDatabase.*|SecurityDatabase = /$VAR/system/security${FB_MAJOR}.fdb|
+s|^#Providers.*|Providers = Remote,Engine${ODS_VER},Loopback|
+/^#RemoteServicePort/ {
+    G
+    a # managed by debian package scripts
+    a include service-port.conf
+}
+EOF
 
     sed "s,\$(this),\$(root)/intl," "$S/intl/fbintl.conf" > "$D/etc/$FBDIR/fbintl.conf"
     copy f "$D/etc/$FBDIR/plugins.conf" "$S/plugins.conf"
@@ -276,6 +304,14 @@ make_common () {
     install -m 0644 \
         debian/functions.sh \
         "$D/usr/share/$P/"
+
+    install -m 0755 -D \
+        debian/configure-port \
+        "$D/usr/share/$FBDIR/configure-port"
+
+    install -m 0755 -D \
+        debian/dump-firebird-config \
+        "$D/usr/share/$FBDIR/dump-firebird-config"
 
     doc_symlink
 }
@@ -393,11 +429,11 @@ make_common_doc() {
 umask 022
 make_server_core
 make_server
-make_libfbclient
+#make_libfbclient
 make_utils
-make_libib_util
+#make_libib_util
 make_common
-make_dev
+#make_dev
 make_examples
 make_doc
 make_common_doc

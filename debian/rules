@@ -79,7 +79,8 @@ DEB_CFLAGS_MAINT_APPEND := -fno-strict-aliasing -O3
 include /usr/share/dpkg/buildflags.mk
 
 confflags += --disable-rpath --with-gpre-cobol \
-	     --with-system-editline --prefix=${ULFB} --with-fbsbin=/usr/sbin \
+	     --with-system-editline --prefix=${ULFB} \
+	     --with-fbsbin=/usr/sbin \
 	     --with-fblib=/usr/lib/${DEB_HOST_MULTIARCH} \
 	     --with-fbconf=${ULFB} --with-fbdoc=${DOC} \
 	     --with-fbudf=${ULFB}/UDF --with-fbsample=${DOC}/examples \
@@ -97,7 +98,6 @@ export FIREBIRD_LOCK := $(CURDIR)/debian/tmp-lock
 # Packaging is split into several packages:
 # * firebirdVV-server (incl libengineXX)
 # * libfbclient2
-# * libib-util
 # * firebirdVV-utils
 # * firebirdVV-common (common parts to client and utils)
 # * firebirdVV-common-doc (big copyright and changelog in one place)
@@ -174,8 +174,6 @@ endif
 
 override_dh_lintian-arch:
 	dh_lintian
-	sed -i -e "s/TRIPLET/$(shell dpkg-architecture -q DEB_TARGET_MULTIARCH)/g" \
-	    debian/libib-util/usr/share/lintian/overrides/libib-util
 override_dh_installchangelogs:
 	dh_installchangelogs ChangeLog -p firebird$(FB_VER)-common-doc
 override_dh_installdocs:
@@ -185,15 +183,12 @@ override_dh_installlogrotate:
 	dh_installlogrotate --name firebird$(FB_VER)
 override_dh_installinit:
 	dh_installinit -pfirebird$(FB_VER)-server --name=firebird$(FB_VER)
-override_dh_installsystemd:
-	dh_installsystemd -pfirebird$(FB_VER)-server --name=firebird$(FB_VER)
 override_dh_link-arch:
 	dh_link -a -A
 override_dh_makeshlibs:
-	dh_makeshlibs -p libfbclient$(CLIENT_SOVER) -V'libfbclient$(CLIENT_SOVER) (>= $(FB_FULL_VER)~)'
-	dh_makeshlibs -p libib-util$(UTIL_SOVER) -V'libib-util$(UTIL_SOVER) (>= $(FB_FULL_VER)~)'
-	dpkg-gensymbols -plibfbclient$(CLIENT_SOVER) -Pdebian/libfbclient$(CLIENT_SOVER)
-	dpkg-gensymbols -plibib-util$(UTIL_SOVER) -Pdebian/libib-util$(UTIL_SOVER)
+#	dh_makeshlibs -p libfbclient$(CLIENT_SOVER) -V'libfbclient$(CLIENT_SOVER) (>= $(FB_FULL_VER)~)'
+#	dpkg-gensymbols -plibfbclient$(CLIENT_SOVER) -Pdebian/libfbclient$(CLIENT_SOVER)
+	dh_makeshlibs -a -X /UDF/ -X /intl/ -X /plugins/
 override_dh_shlibdeps:
 	dh_shlibdeps -a -X /plugins/
 override_dh_gencontrol-arch:

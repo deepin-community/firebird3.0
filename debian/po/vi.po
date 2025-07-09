@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: firebird2.0 2.0.3.12981.ds1-6\n"
 "Report-Msgid-Bugs-To: firebird3.0@packages.debian.org\n"
-"POT-Creation-Date: 2015-05-11 10:00+0300\n"
+"POT-Creation-Date: 2024-12-29 08:30+0200\n"
 "PO-Revision-Date: 2008-03-20 19:38+1030\n"
 "Last-Translator: Clytie Siddall <clytie@riverland.net.au>\n"
 "Language-Team: Vietnamese <vi-VN@googlegroups.com>\n"
@@ -50,10 +50,10 @@ msgid ""
 "database too, using the gsec utility), or you may use dpkg-reconfigure to "
 "update both."
 msgstr ""
-"Mật khẩu này được lưu vào tập tin « /etc/firebird/${FB_VER}/SYSDBA.password "
-"» (cho phép chỉ người chủ đọc). Bạn có khả năng sửa đổi nó ở đó (đừng quên "
-"cũng cập nhật cơ sở dữ liệu bảo mật, dùng tiện ích gsec), hoặc sử dụng câu "
-"lệnh cấu hình lại « dpkg-reconfigure ... » để cập nhật cả hai."
+"Mật khẩu này được lưu vào tập tin « /etc/firebird/${FB_VER}/"
+"SYSDBA.password » (cho phép chỉ người chủ đọc). Bạn có khả năng sửa đổi nó ở "
+"đó (đừng quên cũng cập nhật cơ sở dữ liệu bảo mật, dùng tiện ích gsec), hoặc "
+"sử dụng câu lệnh cấu hình lại « dpkg-reconfigure ... » để cập nhật cả hai."
 
 #. Type: password
 #. Description
@@ -62,8 +62,8 @@ msgid ""
 "If you don't enter a password, a random one will be used (and stored in "
 "SYSDBA.password)."
 msgstr ""
-"Không nhập mật khẩu thì mật khẩu ngẫu nhiên được dùng (và được lưu vào « "
-"SYSDBA.password »)."
+"Không nhập mật khẩu thì mật khẩu ngẫu nhiên được dùng (và được lưu vào "
+"« SYSDBA.password »)."
 
 #. Type: password
 #. Description
@@ -71,29 +71,23 @@ msgstr ""
 msgid "To keep your existing password, leave this blank."
 msgstr "Để giữ lại mật khẩu tồn tại, bỏ rỗng trường này."
 
-#. Type: error
-#. Description
-#: ../firebird3.0-server.templates:4001
-msgid "firebird${FB_VER}-${FB_FLAVOUR} server is in use"
-msgstr "Trình phục vụ firebird${FB_VER}-${FB_FLAVOUR} đang được dùng"
-
-#. Type: error
-#. Description
-#: ../firebird3.0-server.templates:4001
-msgid ""
-" To ensure data integrity, package removal/upgrade is aborted. Please stop "
-"all local and remote clients before removing or upgrading firebird${FB_VER}-"
-"${FB_FLAVOUR}"
-msgstr ""
-"Để bảo đảm tình trạng nguyên vẹn của dữ liệu, tiến trình gỡ bỏ/nâng cấp gói "
-"bị hủy bỏ. Xin hãy dừng chạy tất cả các ứng dụng khách cả cục bộ lẫn ở xa, "
-"trước khi gỡ bỏ hay nâng cấp firebird${FB_VER}-${FB_FLAVOUR}"
-
 #. Type: title
 #. Description
-#: ../firebird3.0-server.templates:5001
+#: ../firebird3.0-server.templates:4001
 msgid "Password for firebird ${FB_VER}"
 msgstr "Mật khẩu cho firebird ${FB_VER}"
+
+#~ msgid "firebird${FB_VER}-${FB_FLAVOUR} server is in use"
+#~ msgstr "Trình phục vụ firebird${FB_VER}-${FB_FLAVOUR} đang được dùng"
+
+#~ msgid ""
+#~ " To ensure data integrity, package removal/upgrade is aborted. Please "
+#~ "stop all local and remote clients before removing or upgrading firebird$"
+#~ "{FB_VER}-${FB_FLAVOUR}"
+#~ msgstr ""
+#~ "Để bảo đảm tình trạng nguyên vẹn của dữ liệu, tiến trình gỡ bỏ/nâng cấp "
+#~ "gói bị hủy bỏ. Xin hãy dừng chạy tất cả các ứng dụng khách cả cục bộ lẫn "
+#~ "ở xa, trước khi gỡ bỏ hay nâng cấp firebird${FB_VER}-${FB_FLAVOUR}"
 
 #~ msgid "Enable Firebird server?"
 #~ msgstr "Bật trình phục vụ Firebird không?"
@@ -112,8 +106,8 @@ msgstr "Mật khẩu cho firebird ${FB_VER}"
 #~ msgstr "Xoá cơ sở dữ liệu mật khẩu không?"
 
 #~ msgid ""
-#~ "The last package that uses password database at /var/lib/firebird/"
-#~ "${FB_VER}/system/security2.fdb is being purged."
+#~ "The last package that uses password database at /var/lib/firebird/$"
+#~ "{FB_VER}/system/security2.fdb is being purged."
 #~ msgstr ""
 #~ "Gói cuối dùng dùng cơ sở dữ liệu mật khẩu ở « /var/lib/firebird/${FB_VER}/"
 #~ "system/security2.fdb » đang bị tẩy."

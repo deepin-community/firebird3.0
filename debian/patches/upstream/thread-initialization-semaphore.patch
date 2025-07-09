@@ -1,0 +1,25 @@
+commit 49e38630499cdab70bc15c255c89fc38048a57a9
+Author: TreeHunter <60896014+TreeHunter9@users.noreply.github.com>
+Date:   Fri Jan 10 09:30:26 2025 +0300
+
+    Fix race in shutdown thread start (#8380)
+    
+    Previously we assign value to shutdownSemaphore after shutdownThread is started, where it is already needed. So we can have situation where shutdownThread instantly leaving due to shutdownSemaphore == nullptr, and we are left with a server that can only be stopped with kill -9.
+    
+    Co-authored-by: Artyom Ivanov <artyom.ivanov@red-soft.ru>
+
+--- a/src/yvalve/why.cpp
++++ b/src/yvalve/why.cpp
+@@ -804,11 +804,11 @@ private:
+ 		explicit CtrlCHandler(MemoryPool& p)
+ 			: ShutdownInit(p)
+ 		{
++			shutdownSemaphore = &semaphore;
+ 			Thread::start(shutdownThread, 0, 0, &handle);
+ 
+ 			procInt = ISC_signal(SIGINT, handlerInt, 0);
+ 			procTerm = ISC_signal(SIGTERM, handlerTerm, 0);
+-			shutdownSemaphore = &semaphore;
+ 		}
+ 
+ 		~CtrlCHandler()

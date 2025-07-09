@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: firebird\n"
 "Report-Msgid-Bugs-To: firebird3.0@packages.debian.org\n"
-"POT-Creation-Date: 2015-05-11 10:00+0300\n"
+"POT-Creation-Date: 2024-12-29 08:30+0200\n"
 "PO-Revision-Date: 2008-03-13 15:19+0100\n"
 "Last-Translator: Bjørn Steensrud <bsteensr@skogkatt.homelinux.org>\n"
 "Language-Team:  <nb@li.org>\n"
@@ -72,29 +72,23 @@ msgstr ""
 msgid "To keep your existing password, leave this blank."
 msgstr "La dette stå tomt for å beholde ditt eksisterende passord."
 
-#. Type: error
-#. Description
-#: ../firebird3.0-server.templates:4001
-msgid "firebird${FB_VER}-${FB_FLAVOUR} server is in use"
-msgstr "firebird${FB_VER}-${FB_FLAVOUR}-tjener er i bruk"
-
-#. Type: error
-#. Description
-#: ../firebird3.0-server.templates:4001
-msgid ""
-" To ensure data integrity, package removal/upgrade is aborted. Please stop "
-"all local and remote clients before removing or upgrading firebird${FB_VER}-"
-"${FB_FLAVOUR}"
-msgstr ""
-"For å sikre dataintegritet blir pakkefjerning/oppdatering avbrutt. Stopp "
-"alle lokale og nettverksklienter før firebird${FB_VER}-${FB_FLAVOUR} fjernes "
-"eller oppgraderes"
-
 #. Type: title
 #. Description
-#: ../firebird3.0-server.templates:5001
+#: ../firebird3.0-server.templates:4001
 msgid "Password for firebird ${FB_VER}"
 msgstr "Passord for firebird ${FB_VER}"
+
+#~ msgid "firebird${FB_VER}-${FB_FLAVOUR} server is in use"
+#~ msgstr "firebird${FB_VER}-${FB_FLAVOUR}-tjener er i bruk"
+
+#~ msgid ""
+#~ " To ensure data integrity, package removal/upgrade is aborted. Please "
+#~ "stop all local and remote clients before removing or upgrading firebird$"
+#~ "{FB_VER}-${FB_FLAVOUR}"
+#~ msgstr ""
+#~ "For å sikre dataintegritet blir pakkefjerning/oppdatering avbrutt. Stopp "
+#~ "alle lokale og nettverksklienter før firebird${FB_VER}-${FB_FLAVOUR} "
+#~ "fjernes eller oppgraderes"
 
 #~ msgid "Enable Firebird server?"
 #~ msgstr "Slå på Firebird-tjener?"
@@ -113,11 +107,11 @@ msgstr "Passord for firebird ${FB_VER}"
 #~ msgstr "Slette passorddatabasen?"
 
 #~ msgid ""
-#~ "The last package that uses password database at /var/lib/firebird/"
-#~ "${FB_VER}/system/security2.fdb is being purged."
+#~ "The last package that uses password database at /var/lib/firebird/$"
+#~ "{FB_VER}/system/security2.fdb is being purged."
 #~ msgstr ""
-#~ "Den siste pakka som bruker passord-databasen ved /var/lib/firebird/"
-#~ "${FB_VER}/system/security2.fdb blir nå fjernet fullstendig."
+#~ "Den siste pakka som bruker passord-databasen ved /var/lib/firebird/$"
+#~ "{FB_VER}/system/security2.fdb blir nå fjernet fullstendig."
 
 #~ msgid ""
 #~ "Leaving security database may present security risk. It is a good idea to "

@@ -1,0 +1,79 @@
+commit 96931200340c8e0abcd3529b8e443d5ab62adfa5
+Author: Piotr Kubaj <pkubaj@FreeBSD.org>
+Date:   Thu Jul 28 14:33:34 2022 +0200
+
+    Add support for FreeBSD/powerpc64le
+
+--- /dev/null
++++ b/builds/posix/prefix.freebsd_powerpc64el
+@@ -0,0 +1,29 @@
++# The contents of this file are subject to the Interbase Public
++# License Version 1.0 (the "License"); you may not use this file
++# except in compliance with the License. You may obtain a copy
++# of the License at http://www.Inprise.com/IPL.html
++#
++# Software distributed under the License is distributed on an
++# "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either express
++# or implied. See the License for the specific language governing
++# rights and limitations under the License.
++#
++# The Original Code was created by Inprise Corporation
++# and its predecessors. Portions created by Inprise Corporation are
++#
++# Copyright (C) 2000 Inprise Corporation
++# All Rights Reserved.
++# Contributor(s): ______________________________________.
++# Start of file prefix.freebsd_powerpc64el:	$(VERSION)	@PLATFORM@
++#
++# 2 Oct 2002, Nickolay Samofatov - Major Cleanup
++
++EXE_LINK_OPTIONS := $(LDFLAGS) $(THR_FLAGS) $(UNDEF_FLAGS) $(LIB_PATH_OPTS) -Wl,-rpath,../gen/firebird/lib
++
++COMMON_FLAGS=-DFREEBSD -DPPC64EL -pipe -MMD -fPIC -fsigned-char
++PROD_FLAGS=$(COMMON_FLAGS) -O3 -g -fno-builtin -Wno-deprecated
++DEV_FLAGS=$(COMMON_FLAGS) -ggdb -p -Wall -Wno-non-virtual-dtor
++
++# These files are generated incorrectly (e.g. array.epp => array.cpp)
++%/array.o %/blob.o %/alice_meta.o %/restore.o %/backup.o: COMMON_FLAGS += -Wno-narrowing
++%/OdsDetection.o %/dba.o: COMMON_FLAGS += -Wno-narrowing
+--- a/configure.ac
++++ b/configure.ac
+@@ -178,6 +178,16 @@ dnl CPU_TYPE=ppc64
+     SHRLIB_EXT=so
+     ;;
+ 
++  powerpc64le-*-freebsd*)
++    MAKEFILE_PREFIX=freebsd_powerpc64el
++    PLATFORM=FREEBSD
++    INSTALL_PREFIX=freebsd
++    AC_DEFINE(FREEBSD, 1, [Define this if OS is FreeBSD])
++    AC_DEFINE(PPC64EL, 1, [Define this if CPU is ppc64el])
++    EDITLINE_FLG=Y
++    SHRLIB_EXT=so
++    ;;
++
+   *-gentoo-freebsd*)
+     MAKEFILE_PREFIX=freebsd
+     PLATFORM=GENTOOFREEBSD
+--- a/src/common/classes/DbImplementation.cpp
++++ b/src/common/classes/DbImplementation.cpp
+@@ -126,7 +126,7 @@ const UCHAR backwardTable[FB_NELEM(hardw
+ /* HPUX */		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		31,		0,		0,		0,		0,		0,
+ /* AIX */		0,		0,		0,		35,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,
+ /* MVS */		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,
+-/* FreeBSD */	61,		67,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,
++/* FreeBSD */	61,		67,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		89,		0,		0,
+ /* NetBSD */	62,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0
+ };
+ 
+--- a/src/jrd/inf_pub.h
++++ b/src/jrd/inf_pub.h
+@@ -249,6 +249,8 @@ enum  info_db_implementations
+ 	isc_info_db_impl_linux_m68k = 87,
+ 	isc_info_db_impl_linux_riscv64 = 88,
+ 
++	isc_info_db_impl_freebsd_ppc64el = 89,
++
+ 	isc_info_db_impl_last_value   // Leave this LAST!
+ };
+ 

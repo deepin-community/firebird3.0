@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: firebird2.0 2.0.3.12981.ds1-6\n"
 "Report-Msgid-Bugs-To: firebird3.0@packages.debian.org\n"
-"POT-Creation-Date: 2015-05-11 10:00+0300\n"
+"POT-Creation-Date: 2024-12-29 08:30+0200\n"
 "PO-Revision-Date: 2008-03-23 08:06+0300\n"
 "Last-Translator: Yuri Kozlov <kozlov.y@gmail.com>\n"
 "Language-Team: Russian <debian-l10n-russian@lists.debian.org>\n"
@@ -17,8 +17,8 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
-"Plural-Forms:  nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms:  nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #. Type: password
 #. Description
@@ -65,8 +65,8 @@ msgid ""
 "If you don't enter a password, a random one will be used (and stored in "
 "SYSDBA.password)."
 msgstr ""
-"Если вы не введёте пароль, будет использован случайный (и сохранён в SYSDBA."
-"password)."
+"Если вы не введёте пароль, будет использован случайный (и сохранён в "
+"SYSDBA.password)."
 
 #. Type: password
 #. Description
@@ -74,29 +74,23 @@ msgstr ""
 msgid "To keep your existing password, leave this blank."
 msgstr "Чтобы сохранить ваш текущий пароль, оставьте поле пустым."
 
-#. Type: error
-#. Description
-#: ../firebird3.0-server.templates:4001
-msgid "firebird${FB_VER}-${FB_FLAVOUR} server is in use"
-msgstr "Сервер firebird${FB_VER}-${FB_FLAVOUR} используется"
-
-#. Type: error
-#. Description
-#: ../firebird3.0-server.templates:4001
-msgid ""
-" To ensure data integrity, package removal/upgrade is aborted. Please stop "
-"all local and remote clients before removing or upgrading firebird${FB_VER}-"
-"${FB_FLAVOUR}"
-msgstr ""
-" Для сохранения целостности данных, удаление/обновление пакета прервано. "
-"Остановите всех локальных и удалённых клиентов перед удалением или "
-"обновлением firebird${FB_VER}-${FB_FLAVOUR}"
-
 #. Type: title
 #. Description
-#: ../firebird3.0-server.templates:5001
+#: ../firebird3.0-server.templates:4001
 msgid "Password for firebird ${FB_VER}"
 msgstr "Пароль для firebird ${FB_VER}"
+
+#~ msgid "firebird${FB_VER}-${FB_FLAVOUR} server is in use"
+#~ msgstr "Сервер firebird${FB_VER}-${FB_FLAVOUR} используется"
+
+#~ msgid ""
+#~ " To ensure data integrity, package removal/upgrade is aborted. Please "
+#~ "stop all local and remote clients before removing or upgrading firebird$"
+#~ "{FB_VER}-${FB_FLAVOUR}"
+#~ msgstr ""
+#~ " Для сохранения целостности данных, удаление/обновление пакета прервано. "
+#~ "Остановите всех локальных и удалённых клиентов перед удалением или "
+#~ "обновлением firebird${FB_VER}-${FB_FLAVOUR}"
 
 #~ msgid "Enable Firebird server?"
 #~ msgstr "Включить сервер Firebird?"
@@ -117,8 +111,8 @@ msgstr "Пароль для firebird ${FB_VER}"
 #~ msgstr "Удалить базу паролей?"
 
 #~ msgid ""
-#~ "The last package that uses password database at /var/lib/firebird/"
-#~ "${FB_VER}/system/security2.fdb is being purged."
+#~ "The last package that uses password database at /var/lib/firebird/$"
+#~ "{FB_VER}/system/security2.fdb is being purged."
 #~ msgstr ""
 #~ "Удаляется последний пакет, который пользовался базой паролей в /var/lib/"
 #~ "firebird/${FB_VER}/system/security2.fdb."
@@ -149,12 +143,12 @@ msgstr "Пароль для firebird ${FB_VER}"
 #~ msgstr ""
 #~ "Вы можете удалить все базы из стандартного каталога баз firebird, /var/"
 #~ "lib/firebird/${FB_VER}/data. Если выбрать эту опцию, то из указанного "
-#~ "каталога и его подкаталогов будут удалены все файлы, оканчивающиеся на \"."
-#~ "fdb\" и \".fbk\"."
+#~ "каталога и его подкаталогов будут удалены все файлы, оканчивающиеся на "
+#~ "\".fdb\" и \".fbk\"."
 
 #~ msgid ""
 #~ "Note that any databases outside of /var/lib/firebird/${FB_VER}/data will "
 #~ "not be affected."
 #~ msgstr ""
-#~ "Обратите внимание, что базы данных за пределами /var/lib/firebird/"
-#~ "${FB_VER}/data не будут затронуты."
+#~ "Обратите внимание, что базы данных за пределами /var/lib/firebird/$"
+#~ "{FB_VER}/data не будут затронуты."

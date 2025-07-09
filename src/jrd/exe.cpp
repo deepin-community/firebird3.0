@@ -553,35 +553,13 @@ void EXE_execute_ddl_triggers(thread_db* tdbb, jrd_tra* transaction, bool preTri
 
 	if (attachment->att_ddl_triggers)
 	{
-		jrd_tra* const oldTransaction = tdbb->getTransaction();
-		tdbb->setTransaction(transaction);
+		AutoSetRestore2<jrd_tra*, thread_db> tempTrans(tdbb,
+			&thread_db::getTransaction,
+			&thread_db::setTransaction,
+			transaction);
 
-		try
-		{
-			TrigVector triggers;
-			TrigVector* triggersPtr = &triggers;
-
-			for (TrigVector::iterator i = attachment->att_ddl_triggers->begin();
-				 i != attachment->att_ddl_triggers->end();
-				 ++i)
-			{
-				if ((i->type & (1LL << action)) &&
-					((preTriggers && (i->type & 0x1) == 0) || (!preTriggers && (i->type & 0x1) == 0x1)))
-				{
-					triggers.add() = *i;
-				}
-			}
-
-			EXE_execute_triggers(tdbb, &triggersPtr, NULL, NULL, TRIGGER_DDL,
-				StmtNode::ALL_TRIGS);
-
-			tdbb->setTransaction(oldTransaction);
-		}
-		catch (...)
-		{
-			tdbb->setTransaction(oldTransaction);
-			throw;
-		}
+		EXE_execute_triggers(tdbb, &attachment->att_ddl_triggers, NULL, NULL, TRIGGER_DDL,
+			preTriggers ? StmtNode::PRE_TRIG : StmtNode::POST_TRIG, action);
 	}
 }
 
@@ -1009,10 +987,12 @@ static void execute_looper(thread_db* tdbb,
 
 
 void EXE_execute_triggers(thread_db* tdbb,
-								TrigVector** triggers,
-								record_param* old_rpb,
-								record_param* new_rpb,
-								TriggerAction trigger_action, StmtNode::WhichTrigger which_trig)
+						  TrigVector** triggers,
+						  record_param* old_rpb,
+						  record_param* new_rpb,
+						  TriggerAction trigger_action,
+						  StmtNode::WhichTrigger which_trig,
+						  int ddl_action)
 {
 /**************************************
  *
@@ -1025,7 +1005,7 @@ void EXE_execute_triggers(thread_db* tdbb,
  *	if any blow up.
  *
  **************************************/
-	if (!*triggers)
+	if (!*triggers || (*triggers)->isEmpty())
 		return;
 
 	SET_TDBB(tdbb);
@@ -1033,7 +1013,7 @@ void EXE_execute_triggers(thread_db* tdbb,
 	jrd_req* const request = tdbb->getRequest();
 	jrd_tra* const transaction = request ? request->req_transaction : tdbb->getTransaction();
 
-	TrigVector* vector = *triggers;
+	RefPtr<TrigVector> vector(*triggers);
 	Record* const old_rec = old_rpb ? old_rpb->rpb_record : NULL;
 	Record* const new_rec = new_rpb ? new_rpb->rpb_record : NULL;
 
@@ -1061,6 +1041,20 @@ void EXE_execute_triggers(thread_db* tdbb,
 	{
 		for (TrigVector::iterator ptr = vector->begin(); ptr != vector->end(); ++ptr)
 		{
+			if (trigger_action == TRIGGER_DDL && ddl_action)
+			{
+				// Skip triggers not matching our action
+
+				fb_assert(which_trig == StmtNode::PRE_TRIG || which_trig == StmtNode::POST_TRIG);
+				const bool preTriggers = (which_trig == StmtNode::PRE_TRIG);
+
+				const FB_UINT64 type = ptr->type & ~TRIGGER_TYPE_MASK;
+				const bool preTrigger = ((type & 1) == 0);
+
+				if (!(type & (1LL << ddl_action)) || preTriggers != preTrigger)
+					continue;
+			}
+
 			ptr->compile(tdbb);
 
 			trigger = ptr->statement->findRequest(tdbb);
@@ -1118,15 +1112,9 @@ void EXE_execute_triggers(thread_db* tdbb,
 
 			trigger = NULL;
 		}
-
-		if (vector != *triggers)
-			MET_release_triggers(tdbb, &vector);
 	}
 	catch (const Firebird::Exception& ex)
 	{
-		if (vector != *triggers)
-			MET_release_triggers(tdbb, &vector);
-
 		if (trigger)
 		{
 			EXE_unwind(tdbb, trigger);

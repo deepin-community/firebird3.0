@@ -76,3 +76,14 @@ Author: Damyan Ivanov <dmn@debian.org>
  
  PROD_FLAGS=-ggdb -O3 $(COMMON_FLAGS)
  DEV_FLAGS=-ggdb -p -Wall -Wno-switch $(COMMON_FLAGS) -Wno-non-virtual-dtor
+--- a/builds/posix/prefix.linux_arm64
++++ b/builds/posix/prefix.linux_arm64
+@@ -22,7 +22,7 @@
+ #DEV_FLAGS=-ggdb -DLINUX -DARM64 -pipe -p -MMD -fPIC -Wall -fsigned-char -fmessage-length=0 -Wno-non-virtual-dtor -DFB_SEND_FLAGS=MSG_NO
+ 
+ COMMON_FLAGS=-ggdb -DFB_SEND_FLAGS=MSG_NOSIGNAL -DLINUX -DARM64 -pipe -p -MMD -fPIC -fmessage-length=0 -fno-delete-null-pointer-checks -fsigned-char
+-CXXFLAGS=-std=gnu++03
++CXXFLAGS+=-std=gnu++03
+ OPTIMIZE_FLAGS=-O3 -fno-omit-frame-pointer
+ WARN_FLAGS=-Wall -Wno-switch -Wno-parentheses -Wno-unknown-pragmas -Wno-unused-variable -Wno-invalid-offsetof -Wno-narrowing -Wno-unused-local-typedefs -Wno-non-virtual-dtor
+ 

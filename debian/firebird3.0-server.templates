@@ -33,11 +33,6 @@ Description: New password for SYSDBA (for internal use)
  *DO NOT TRANSLATE*
  This is an internal, hidden template
 
-Template: shared/firebird/server_in_use
-Type: error
-_Description: firebird${FB_VER}-${FB_FLAVOUR} server is in use
-  To ensure data integrity, package removal/upgrade is aborted. Please stop all local and remote clients before removing or upgrading firebird${FB_VER}-${FB_FLAVOUR}
-
 Template: shared/firebird/title
 Type: title
 _Description: Password for firebird ${FB_VER}

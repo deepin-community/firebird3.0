@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: firebird2.0-templates\n"
 "Report-Msgid-Bugs-To: firebird3.0@packages.debian.org\n"
-"POT-Creation-Date: 2015-05-11 10:00+0300\n"
+"POT-Creation-Date: 2024-12-29 08:30+0200\n"
 "PO-Revision-Date: 2008-03-13 10:28+0100\n"
 "Last-Translator: Piarres Beobide <pi@beobide.net>\n"
 "Language-Team: Euskara <Librezale@librezale.org>\n"
@@ -71,29 +71,23 @@ msgstr ""
 msgid "To keep your existing password, leave this blank."
 msgstr "Dagoen pasahitza mantentzeko hau zurian utzi."
 
-#. Type: error
-#. Description
-#: ../firebird3.0-server.templates:4001
-msgid "firebird${FB_VER}-${FB_FLAVOUR} server is in use"
-msgstr "firebird${FB_VER}-${FB_FLAVOUR} zerbitzaria erabilia dago"
-
-#. Type: error
-#. Description
-#: ../firebird3.0-server.templates:4001
-msgid ""
-" To ensure data integrity, package removal/upgrade is aborted. Please stop "
-"all local and remote clients before removing or upgrading firebird${FB_VER}-"
-"${FB_FLAVOUR}"
-msgstr ""
-" Datu integritatea ziurtatzeko pakete ezabatze/eguneratze prozesua utzia "
-"izan da. Mesedez geratu urruneko eta lokalean egon litezken lokalean "
-"bezeroak firebird${FB_VER}-${FB_FLAVOUR} kendu edo eguneratu aurretik."
-
 #. Type: title
 #. Description
-#: ../firebird3.0-server.templates:5001
+#: ../firebird3.0-server.templates:4001
 msgid "Password for firebird ${FB_VER}"
 msgstr "firebird ${FB_VER} pasahitza"
+
+#~ msgid "firebird${FB_VER}-${FB_FLAVOUR} server is in use"
+#~ msgstr "firebird${FB_VER}-${FB_FLAVOUR} zerbitzaria erabilia dago"
+
+#~ msgid ""
+#~ " To ensure data integrity, package removal/upgrade is aborted. Please "
+#~ "stop all local and remote clients before removing or upgrading firebird$"
+#~ "{FB_VER}-${FB_FLAVOUR}"
+#~ msgstr ""
+#~ " Datu integritatea ziurtatzeko pakete ezabatze/eguneratze prozesua utzia "
+#~ "izan da. Mesedez geratu urruneko eta lokalean egon litezken lokalean "
+#~ "bezeroak firebird${FB_VER}-${FB_FLAVOUR} kendu edo eguneratu aurretik."
 
 #~ msgid "Enable Firebird server?"
 #~ msgstr "Gaitu Firebird zerbitzaria?"
@@ -112,8 +106,8 @@ msgstr "firebird ${FB_VER} pasahitza"
 #~ msgstr "Pasahitz datubasea ezabatu?"
 
 #~ msgid ""
-#~ "The last package that uses password database at /var/lib/firebird/"
-#~ "${FB_VER}/system/security2.fdb is being purged."
+#~ "The last package that uses password database at /var/lib/firebird/$"
+#~ "{FB_VER}/system/security2.fdb is being purged."
 #~ msgstr ""
 #~ "/var/lib/firebird/${FB_VER}/system/security2.fdb-eko datubasea erabiltzen "
 #~ "zuen azken paketea ezabatua izango da."
@@ -144,8 +138,8 @@ msgstr "firebird ${FB_VER} pasahitza"
 #~ msgstr ""
 #~ "Zuka agian ez dituzu /var/lib/firebird/${FB_VER}/data firebird datubase "
 #~ "direktorio estandarreko datubase guztiak ezabatu nahi. Aukera hau "
-#~ "hautatuaz aurreko direktorio eta bere azpidirektorioetako \".fbd\" eta \"."
-#~ "fbk\" amaiera duten fitxategiak ezabatuak izango dira."
+#~ "hautatuaz aurreko direktorio eta bere azpidirektorioetako \".fbd\" eta "
+#~ "\".fbk\" amaiera duten fitxategiak ezabatuak izango dira."
 
 #~ msgid ""
 #~ "Note that any databases outside of /var/lib/firebird/${FB_VER}/data will "

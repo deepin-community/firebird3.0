@@ -8,7 +8,8 @@ then
 fi
 
 export FB_VER
-FB_VER_no_dots=`echo $FB_VER | sed -e 's/\.//g'`
+FB_VER_no_dots=$(echo "$FB_VER" | sed -e 's/\.//g')
+SEC_API=$(echo "$FB_VER" | sed 's/\..*//')
 
 FB="/usr/lib/firebird/$FB_VER"
 VAR="/var/lib/firebird/$FB_VER"
@@ -20,30 +21,34 @@ DBAPasswordFile="$ETC/SYSDBA.password"
 
 create_var_run_firebird()
 {
-    if ! [ -d $RUN ]; then
-        mkdir --parent $RUN
-        chmod 0770 $RUN
-        chown firebird:firebird $RUN
+    if ! [ -d "$RUN" ]; then
+        mkdir --parent "$RUN"
+        chmod 0770 "$RUN"
+        chown firebird:firebird "$RUN"
     fi
 }
 
 fixPerms() {
     create_var_run_firebird
 
-    find $VAR -type d -exec chown firebird:firebird {} \; \
+    find "$VAR" -type d -exec chown firebird:firebird {} \; \
                            -exec chmod 0770 {} \;
-    find $VAR -type f -exec chown firebird:firebird {} \; \
+    find "$VAR" -type f -exec chown firebird:firebird {} \; \
                            -exec chmod 0660 {} \;
 
-    chmod 0770 $LOG_DIR
-    chown firebird:firebird $LOG_DIR
+    chmod 0770 "$LOG_DIR"
+    chown firebird:firebird "$LOG_DIR"
+}
+
+runAsFirebird() {
+    runuser -u firebird -g firebird -- /bin/sh -c "$*"
 }
 
 #---------------------------------------------------------------------------
 # set new SYSDBA password with gsec
 
 writeNewPassword () {
-    local NewPasswd=$1
+    local NewPassword=$1
 
     # Provide default SYSDBA.password
     if [ ! -e "$DBAPasswordFile" ];
@@ -55,7 +60,7 @@ writeNewPassword () {
 # Password for firebird SYSDBA user
 #
 # You may want to use the following command for changing it:
-#   dpkg-reconfigure firebird${FB_VER}
+#   dpkg-reconfigure firebird${FB_VER}-server
 #
 # If you change the password manually with isql-fb or gsec, please update it
 # here too. Keeping this file in sync with the security database is useful for
@@ -67,16 +72,14 @@ _EOF
     else
         . "$DBAPasswordFile"
     fi
-    if [ "$NewPasswd" != "${ISC_PASSWORD:-}" ]; then
-        service firebird3.0 stop
-        p=$(echo "$NewPasswd" | sed "s/'/''/g")
+    if [ "$NewPassword" != "${ISC_PASSWORD:-}" ]; then
+        # SQL-quoted variant
+        p=$(echo "$NewPassword" | sed "s/'/''/g")
         echo "create or alter user sysdba password '$p';" \
-            | isql-fb -user sysdba "$SEC_DB"
+            | runAsFirebird isql-fb --fb-ver "$FB_VER" -user sysdba "$SEC_DB"
 
-        # Running as root may create lock files that
-        # need to be owned by firebird instead
-        fixPerms
-
+        # shell-quoted variant
+        local sh_p=$(echo "$NewPassword" | sed 's/"/\\"/g')
         if grep "^ *ISC_PASSWORD=" "$DBAPasswordFile" > /dev/null;
         then
             # Update existing line
@@ -84,12 +87,12 @@ _EOF
             # create .tmp file preserving permissions
             cp -a "$DBAPasswordFile" "$DBAPasswordFile.tmp"
 
-            sed -e "s/^ *ISC_PASSWORD=.*/ISC_PASSWORD=\"$NewPassword\"/" \
+            sed -e "s/^ *ISC_PASSWORD=.*/ISC_PASSWORD=\"$sh_p\"/" \
             < "$DBAPasswordFile" > "$DBAPasswordFile.tmp"
             mv -f "$DBAPasswordFile.tmp" "$DBAPasswordFile"
         else
             # Add new line
-            echo "ISC_PASSWORD=$NewPassword" >> "$DBAPasswordFile"
+            echo "ISC_PASSWORD=\"$sh_p\"" >> "$DBAPasswordFile"
         fi
 
         ISC_PASSWORD=$NewPassword
@@ -121,7 +124,7 @@ askForDBAPassword ()
     writeNewPassword "$NewPassword"
 
     # Make debconf forget all password questions
-    db_reset $QUESTION || true
+    db_reset "$QUESTION" || true
     db_reset shared/firebird/sysdba_password/first_install || true
     db_reset shared/firebird/sysdba_password/upgrade_reconfigure || true
 }
@@ -129,23 +132,25 @@ askForDBAPassword ()
 instantiate_security_db()
 {
     SYS_DIR="$VAR/system"
-    SEC_DB="$SYS_DIR/security3.fdb"
+    SEC_DB="$SYS_DIR/security$SEC_API.fdb"
 
     if ! [ -e "$SEC_DB" ];
     then
-        local SEC_SQL="/usr/share/firebird/3.0/security.sql"
+        local SEC_SQL="/usr/share/firebird/$FB_VER/security.sql"
         local T=$(mktemp -d)
         trap "rm -rf '$T'" 0 INT QUIT
+        chmod 0700 "$T"
+        chown firebird:firebird "$T"
         local T_SEC="$T/security.fdb"
 
         (
             set -e
             export LANG=C
-            echo "create database '$T_SEC';" | isql-fb -q
-            gfix -user SYSDBA -write async "$T_SEC"
-            isql-fb -user SYSDBA -i "$SEC_SQL" "$T_SEC"
+            echo "create database '$T_SEC';" | runAsFirebird isql-fb --fb-ver "$FB_VER" -q
+            runAsFirebird gfix --fb-ver "$FB_VER" -user SYSDBA -write async "$T_SEC"
+            runAsFirebird isql-fb --fb-ver "$FB_VER" -user SYSDBA -i "$SEC_SQL" "$T_SEC"
         )
-        gfix -user SYSDBA -write sync "$T_SEC"
+        runAsFirebird gfix --fb-ver "$FB_VER" -user SYSDBA -write sync "$T_SEC"
         install -o firebird -g firebird -m 0660 "$T_SEC" "$SEC_DB"
 
         # Since we've copied the default security database, the SYSDBA password
@@ -153,7 +158,7 @@ instantiate_security_db()
         if [ -f "$DBAPasswordFile" ]; then
             rm "$DBAPasswordFile"
         fi
-        echo Created default security3.fdb
+        echo "Created default $(basename "$SEC_DB")"
     fi
 }
 
@@ -163,14 +168,7 @@ firebird_config_postinst()
 
     fixPerms
 
-    if ! invoke-rc.d firebird$FB_VER start; then
-        echo "Firebird $FB_VER server not enabled or unable to start"
-        echo "Not setting SYSDBA password"
-        echo "Please run 'dpkg-reconfigure firebird$FB_VER-server'"
-        echo "later to set the SYSDBA password"
-    else
-        askForDBAPassword
-    fi
+    askForDBAPassword
 
     debhelper_hook "$@"
 }

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: firebird2.0\n"
 "Report-Msgid-Bugs-To: firebird3.0@packages.debian.org\n"
-"POT-Creation-Date: 2015-05-11 10:00+0300\n"
+"POT-Creation-Date: 2024-12-29 08:30+0200\n"
 "PO-Revision-Date: 2008-03-13 11:16+0100\n"
 "Last-Translator: Bart Cornelis <cobaco@skolelinux.no>\n"
 "Language-Team: debian-l10n-dutch <debian-l10n-dutch@lists.debian.org>\n"
@@ -71,29 +71,23 @@ msgstr ""
 msgid "To keep your existing password, leave this blank."
 msgstr "Als u uw bestaande wachtwoord wilt behouden dient u dit leeg te laten."
 
-#. Type: error
-#. Description
-#: ../firebird3.0-server.templates:4001
-msgid "firebird${FB_VER}-${FB_FLAVOUR} server is in use"
-msgstr "firebird${FB_VER}-${FB_FLAVOUR} server is in gebruik"
-
-#. Type: error
-#. Description
-#: ../firebird3.0-server.templates:4001
-msgid ""
-" To ensure data integrity, package removal/upgrade is aborted. Please stop "
-"all local and remote clients before removing or upgrading firebird${FB_VER}-"
-"${FB_FLAVOUR}"
-msgstr ""
-"Om data-integriteit te verzekeren wordt het verwijderen/opwaarderen van dit "
-"pakket afgebroken. Gelieve alle clients te stoppen voor u firebird${FB_VER}-"
-"${FB_FLAVOUR} verwijderd of opwaardeert. "
-
 #. Type: title
 #. Description
-#: ../firebird3.0-server.templates:5001
+#: ../firebird3.0-server.templates:4001
 msgid "Password for firebird ${FB_VER}"
 msgstr "Wachtwoord voor firebird ${FB_VER}"
+
+#~ msgid "firebird${FB_VER}-${FB_FLAVOUR} server is in use"
+#~ msgstr "firebird${FB_VER}-${FB_FLAVOUR} server is in gebruik"
+
+#~ msgid ""
+#~ " To ensure data integrity, package removal/upgrade is aborted. Please "
+#~ "stop all local and remote clients before removing or upgrading firebird$"
+#~ "{FB_VER}-${FB_FLAVOUR}"
+#~ msgstr ""
+#~ "Om data-integriteit te verzekeren wordt het verwijderen/opwaarderen van "
+#~ "dit pakket afgebroken. Gelieve alle clients te stoppen voor u firebird$"
+#~ "{FB_VER}-${FB_FLAVOUR} verwijderd of opwaardeert. "
 
 #~ msgid "Enable Firebird server?"
 #~ msgstr "Wilt u de Firebird-server activeren?"
@@ -114,8 +108,8 @@ msgstr "Wachtwoord voor firebird ${FB_VER}"
 #~ msgstr "Wilt u de wachtwoorddatabase verwijderen?"
 
 #~ msgid ""
-#~ "The last package that uses password database at /var/lib/firebird/"
-#~ "${FB_VER}/system/security2.fdb is being purged."
+#~ "The last package that uses password database at /var/lib/firebird/$"
+#~ "{FB_VER}/system/security2.fdb is being purged."
 #~ msgstr ""
 #~ "Het laatste pakket dat de wachtwoorddatabase /var/lib/firebird/${FB_VER}/"
 #~ "system/security2.fdb gebruikt wordt gewist."

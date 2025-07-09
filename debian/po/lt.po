@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lt\n"
 "Report-Msgid-Bugs-To: firebird3.0@packages.debian.org\n"
-"POT-Creation-Date: 2015-05-11 10:00+0300\n"
+"POT-Creation-Date: 2024-12-29 08:30+0200\n"
 "PO-Revision-Date: 2007-04-17 15:48+0300\n"
 "Last-Translator: Gintautas Miliauskas <gintas@akl.lt>\n"
 "Language-Team: Lithuanian <gnome-lt@lists.akl.lt>\n"
@@ -16,8 +16,8 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
-"Plural-Forms:  nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n"
-"%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms:  nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"(n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #. Type: password
 #. Description
@@ -73,29 +73,23 @@ msgstr ""
 msgid "To keep your existing password, leave this blank."
 msgstr "Jei norite palikti esamą slaptažodį, palikite lauką tuščią."
 
-#. Type: error
-#. Description
-#: ../firebird3.0-server.templates:4001
-msgid "firebird${FB_VER}-${FB_FLAVOUR} server is in use"
-msgstr "firebird${FB_VER}-${FB_FLAVOUR} serveris naudojamas"
-
-#. Type: error
-#. Description
-#: ../firebird3.0-server.templates:4001
-msgid ""
-" To ensure data integrity, package removal/upgrade is aborted. Please stop "
-"all local and remote clients before removing or upgrading firebird${FB_VER}-"
-"${FB_FLAVOUR}"
-msgstr ""
-" Paketo trynimas/atnaujinimas nutrauktas, kad būtų išsaugotas duomenų "
-"vientisumas. Sustabdykite visus vietinius ir nuotolinius klientus prieš "
-"trindami ar atnaujindami firebird${FB_VER}-${FB_FLAVOUR}"
-
 #. Type: title
 #. Description
-#: ../firebird3.0-server.templates:5001
+#: ../firebird3.0-server.templates:4001
 msgid "Password for firebird ${FB_VER}"
 msgstr "firebird ${FB_VER} slaptažodis"
+
+#~ msgid "firebird${FB_VER}-${FB_FLAVOUR} server is in use"
+#~ msgstr "firebird${FB_VER}-${FB_FLAVOUR} serveris naudojamas"
+
+#~ msgid ""
+#~ " To ensure data integrity, package removal/upgrade is aborted. Please "
+#~ "stop all local and remote clients before removing or upgrading firebird$"
+#~ "{FB_VER}-${FB_FLAVOUR}"
+#~ msgstr ""
+#~ " Paketo trynimas/atnaujinimas nutrauktas, kad būtų išsaugotas duomenų "
+#~ "vientisumas. Sustabdykite visus vietinius ir nuotolinius klientus prieš "
+#~ "trindami ar atnaujindami firebird${FB_VER}-${FB_FLAVOUR}"
 
 #, fuzzy
 #~| msgid "Enabled firebird version:"
@@ -106,8 +100,8 @@ msgstr "firebird ${FB_VER} slaptažodis"
 #~ msgstr "Ištrinti slaptažodžių duomenų bazę?"
 
 #~ msgid ""
-#~ "The last package that uses password database at /var/lib/firebird/"
-#~ "${FB_VER}/system/security2.fdb is being purged."
+#~ "The last package that uses password database at /var/lib/firebird/$"
+#~ "{FB_VER}/system/security2.fdb is being purged."
 #~ msgstr ""
 #~ "Trinamas paskutinis paketas, naudojantis slaptažodžių duomenų bazę faile /"
 #~ "var/lib/firebird/${FB_VER}/system/security2.fdb."

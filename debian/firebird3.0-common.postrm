@@ -26,6 +26,10 @@ case "$1" in
         rm -f $RUN/isc_guard1.*
     ;;
 
+    purge)
+         rm -f "/etc/firebird/$FB_VER/service-port.conf"
+     ;;
+
 esac
 
 exit 0
