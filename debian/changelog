@@ -1,3 +1,10 @@
+firebird3.0 (3.0.11.33703.ds4-2deepin1) unstable; urgency=medium
+
+  * Fix CVE-2025-54989: NULL pointer dereference in XDR message parsing
+    Upstream: https://github.com/FirebirdSQL/firebird/commit/169da595f8693fc1a65a79c741724b1bc8db9f25
+
+ -- deepin-ci-robot <packages@deepin.org>  Thu, 07 May 2026 18:40:00 +0800
+
 firebird3.0 (3.0.11.33703.ds4-2) unstable; urgency=medium
 
   * Bump policy-compliance version to 4.6.2 (no changes needed)
